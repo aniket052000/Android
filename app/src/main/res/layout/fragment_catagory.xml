@@ -9,10 +9,10 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+        android:layout_width="81dp"
         android:layout_height="27dp"
         android:gravity="center"
-        android:text="Catagory name"
+        android:text="My cart"
         android:textColor="@color/black"
         android:textSize="15dp"
 

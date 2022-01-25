@@ -40,6 +40,8 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapter
                 .into(viewHolder.imageViewBackground);
     }
 
+
+
     @Override
     public int getCount() {
        return mSliderItems.size();

@@ -22,9 +22,9 @@ import android.view.ViewGroup;
 
 
 public class Home extends Fragment implements RecommendedAdapter.RecommendedDataInterface {
-    String url1 = "https://www.geeksforgeeks.org/wp-content/uploads/gfg_200X200-1.png";
-    String url2 = "https://qphs.fs.quoracdn.net/main-qimg-8e203d34a6a56345f86f1a92570557ba.webp";
-    String url3 = "https://bizzbucket.co/wp-content/uploads/2020/08/Life-in-The-Metro-Blog-Title-22.png";
+    String url1 = "https://www.thespruceeats.com/thmb/nvKn0U92Cw5PPZsERaZWgmb8VHY=/2000x1500/filters:fill(auto,1)/Whiskey-GettyImages-139555513-59a3738e68e1a20013413b60.jpg";
+    String url2 = "https://images.hindustantimes.com/rf/image_size_630x354/HT/p2/2018/10/03/Pictures/_4fa6ba5a-c6f3-11e8-bbf7-ccd0803112e5.jpg";
+    String url3 = "https://site-cdn.givemesport.com/images/20/06/14/7d3f54214de386e86c07640f4d204424/960.jpg";
 
     public Home() {
         // Required empty public constructor
@@ -35,6 +35,7 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home,container,false);
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

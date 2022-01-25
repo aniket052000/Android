@@ -29,12 +29,18 @@ public class Profile extends Fragment {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_profile, container, false);
         TextView textAcc= (TextView) v.findViewById(R.id.PAccount);
-
-
+        TextView textOrder=(TextView) v.findViewById(R.id.POrderHistory);
         textAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i=new Intent(getContext(),Account.class);
+                startActivity(i);
+            }
+        });
+        textOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(getContext(),OrderHistory.class);
                 startActivity(i);
             }
         });
