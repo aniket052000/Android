@@ -11,6 +11,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Emobile">
         <activity
             android:name=".SignupOrLogin"
@@ -20,15 +21,15 @@
             android:exported="false" />
         <activity
             android:name=".Product"
-            android:exported="false"></activity>
+            android:exported="false"/>
         <activity
             android:name=".Account"
             android:exported="false" />
         <activity
-            android:name=".Login"
+            android:name=".loginRetro.Login"
             android:exported="false" />
         <activity
-            android:name=".SignUp"
+            android:name=".signupRetro.SignUp"
             android:exported="false" />
         <activity
             android:name=".Dummy"
@@ -39,7 +40,7 @@
         </activity>
         <activity
             android:name=".OrderHistory"
-            android:exported="false"></activity>
+            android:exported="false"/>
         <activity
             android:name=".Splash"
             android:exported="true">

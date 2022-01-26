@@ -22,9 +22,6 @@ public class Dummy extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dummy);
-
-//        Toolbar toolbar=(Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
         Home home = new Home();
         Cart cartobj = new Cart();
         Profile profileobj = new Profile();
@@ -32,7 +29,7 @@ public class Dummy extends AppCompatActivity{
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            boolean userLoggedIn=false;
+            boolean userLoggedIn=true;
             switch (id) {
                 case R.id.cart:
                     if(userLoggedIn)

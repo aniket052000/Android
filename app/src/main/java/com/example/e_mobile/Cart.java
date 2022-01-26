@@ -1,5 +1,6 @@
 package com.example.e_mobile;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -74,6 +75,7 @@ public class Cart extends Fragment implements CartAdapter.CartDataInterface{
     }
 
     @Override
-    public void onUserClick(CartModel cartModel) {
+    public void onUserClick(CartModel cartModel,View view, int position) {
+        startActivity(new Intent(getContext(),Product.class));
     }
 }

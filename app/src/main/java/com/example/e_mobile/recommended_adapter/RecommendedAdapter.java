@@ -31,7 +31,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         holder.price.setText(recommended_model.getPrice()+"");
         Glide.with(holder.imgProduct.getContext()).load(recommended_model.getImageUrl()).placeholder(R.drawable.ic_baseline_person).into(holder.imgProduct);
         holder.rootview.setOnClickListener(view -> {
-            recommendedDataInterface.onUserClick(recommended_model);
+            recommendedDataInterface.onUserClick(recommended_model,view, holder.getAdapterPosition());
         });
     }
 
@@ -47,7 +47,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         return new RecommendedAdapter.ViewHolder(view);
     }
     public interface RecommendedDataInterface{
-        void onUserClick(Recommended_Model recommended_model);
+        void onUserClick(Recommended_Model recommended_model,View view,int position);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,5 +1,6 @@
 package com.example.e_mobile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
@@ -97,7 +98,8 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
         recommendDataList.add(new Recommended_Model("Employee 14", 113,"https://top-madagascar.com/assets/images/admin/user-admin.png"));}
 
     @Override
-    public void onUserClick(Recommended_Model recommended_model) {
+    public void onUserClick(Recommended_Model recommended_model,View view, int position) {
+        startActivity(new Intent(getContext(),Product.class));
 
     }
 }

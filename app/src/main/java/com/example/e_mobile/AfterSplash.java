@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.e_mobile.loginRetro.Login;
+import com.example.e_mobile.signupRetro.SignUp;
+
 public class AfterSplash extends AppCompatActivity {
 
     @Override
@@ -22,7 +25,7 @@ public class AfterSplash extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(AfterSplash.this,Login.class);
+                Intent i=new Intent(AfterSplash.this, Login.class);
                 startActivity(i);
             }
         });
@@ -30,7 +33,7 @@ public class AfterSplash extends AppCompatActivity {
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(AfterSplash.this,SignUp.class);
+                Intent i=new Intent(AfterSplash.this, SignUp.class);
                 startActivity(i);
             }
         });
