@@ -22,7 +22,7 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
                 Intent i=new Intent(Splash.this,
-                        Dummy.class);
+                        AfterSplash.class);
                 //Intent is used to switch from one activity to another.
                 startActivity(i);
                 //invoke the SecondActivity.

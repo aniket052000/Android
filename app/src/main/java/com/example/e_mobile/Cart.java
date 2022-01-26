@@ -52,22 +52,6 @@ public class Cart extends Fragment implements CartAdapter.CartDataInterface{
 
 
 
-//        Button inc=view.findViewById(R.id.increase);
-//        Button dec=view.findViewById(R.id.decrease);
-//        TextView dis=view.findViewById(R.id.Cquantity);
-
-//        inc.setOnClickListener(v -> {
-//            count++;
-//            dis.setText(""+count);
-//        });
-//
-//        dec.setOnClickListener(v -> {
-//            count--;
-//            if(count<0)
-//                count=0;
-//            dis.setText(""+count);
-//        });
-
 
     }
 

@@ -20,7 +20,7 @@ import java.text.BreakIterator;
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
-
+    int count=0;
     private final List<CartModel> cartModelList;
     private final CartDataInterface cartDataInterface;
 
@@ -39,6 +39,20 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         Glide.with(holder.imgProduct.getContext()).load(cartModel.getImageUrl()).placeholder(R.drawable.ic_baseline_person).into(holder.imgProduct);
         holder.rootview.setOnClickListener(view -> {
             cartDataInterface.onUserClick(cartModel);
+        });
+
+
+
+        holder.inc.setOnClickListener(v -> {
+            count++;
+            holder.dis.setText(""+count);
+        });
+
+        holder.dec.setOnClickListener(v -> {
+            count--;
+            if(count<0)
+                count=0;
+            holder.dis.setText(""+count);
         });
     }
     @NonNull
@@ -63,7 +77,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         private final TextView quantity;
         private final View rootview;
         private final ImageView imgProduct;
-
+        private final Button inc;
+        private final Button dec;
+        private final TextView dis;
 
         public ViewHolder(View view){
             super(view);
@@ -72,6 +88,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             price=view.findViewById(R.id.Cprice);
             imgProduct=view.findViewById(R.id.Cimg_product);
             quantity=view.findViewById(R.id.Cquantity);
+            inc=view.findViewById(R.id.increase);
+            dec=view.findViewById(R.id.decrease);
+            dis=view.findViewById(R.id.Cquantity);
         }
     }
 }

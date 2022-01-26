@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="409dp"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    tools:layout_editor_absoluteX="1dp"
+    tools:layout_editor_absoluteY="1dp"
+    android:background="@color/white"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".Product">
+
+        <ImageView
+            android:id="@+id/ProImg"
+            android:layout_width="match_parent"
+            android:layout_height="275dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/Proname"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:text="Name"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ProImg" />
+
+        <TextView
+            android:id="@+id/Proprice"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="Price"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Proname" />
+
+        <TextView
+            android:id="@+id/prodes"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Description"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Proprice" />
+
+        <TextView
+            android:id="@+id/proattribute1"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="attribute"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/prodes" />
+        <TextView
+            android:id="@+id/proattribute2"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="attribute"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proattribute1" />
+        <TextView
+            android:id="@+id/proattribute3"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="attribute"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proattribute2" />
+        <TextView
+            android:id="@+id/proattribute4"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="attribute"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proattribute3" />
+        <TextView
+            android:id="@+id/proattribute5"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="attribute"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proattribute4" />
+
+        <Button
+            android:layout_width="184dp"
+            android:layout_height="80dp"
+            android:text="Buy now"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.071"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proattribute5" />
+
+        <Button
+            android:layout_width="184dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="4dp"
+            android:text="Add to cart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.928"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proattribute5">
+
+
+        </Button>
+
+
+        <!--        <Button-->
+<!--            android:id="@+id/Probuy"-->
+<!--            android:layout_width="184dp"-->
+<!--            android:layout_height="83dp"-->
+<!--            android:text="Buy now"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            tools:layout_editor_absoluteY="648dp" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/ProAdd"-->
+<!--            android:layout_width="194dp"-->
+<!--            android:layout_height="76dp"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:text="Add to cart"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            tools:layout_editor_absoluteY="650dp" />-->
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+
+
+

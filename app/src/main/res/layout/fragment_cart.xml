@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="27dp"
         android:gravity="center"
-        android:text="Catagory name"
+        android:text="My cart"
         android:textColor="@color/black"
         android:textSize="15dp"
 
@@ -25,11 +25,41 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartrecycler"
         android:layout_width="409dp"
-        android:layout_height="702dp"
+        android:layout_height="620dp"
         android:layout_marginTop="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/Ctotal"
+        android:layout_width="180dp"
+        android:layout_height="41dp"
+        android:gravity="center"
+        android:text="Total"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cartrecycler" />
+
+    <TextView
+        android:id="@+id/Totaldisplay"
+        android:layout_width="180dp"
+        android:layout_height="41dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Ctotal" />
+
+    <Button
+        android:id="@+id/placeorder"
+        android:layout_width="210dp"
+        android:layout_height="67dp"
+        android:text="Place order"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/Ctotal"
+        app:layout_constraintTop_toBottomOf="@+id/cartrecycler" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
