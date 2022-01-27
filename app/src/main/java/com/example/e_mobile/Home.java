@@ -5,10 +5,13 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 //import com.example.e_mobile.productRetro.ProductFullView;
+import com.example.e_mobile.RetrofitInterfaces.RecommendInterface;
 import com.example.e_mobile.RetrofitInterfaces.SliderInterface;
 import com.example.e_mobile.builder.BuilderProduct;
+import com.example.e_mobile.builder.BuilderRecommended;
 import com.example.e_mobile.builder.BuilderSignup;
 import com.example.e_mobile.productRetro.ProductEntity;
+import com.example.e_mobile.recommendRetro.RecommendEntity;
 import com.example.e_mobile.recommended_adapter.RecommendedAdapter;
 import com.example.e_mobile.recommended_model.Recommended_Model;
 import com.example.e_mobile.signupRetro.Respentity;
@@ -150,12 +153,32 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
         });
 
 
-        List<Recommended_Model> recommended_models=new ArrayList<>();
-        generateUserData(recommended_models);
+//        List<Recommended_Model> recommended_models=new ArrayList<>();
+//        generateUserData(recommended_models);
         RecyclerView recyclerView=view.findViewById(R.id.recycler1);
-        RecommendedAdapter recommendedAdapter=new RecommendedAdapter(recommended_models,Home.this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(recommendedAdapter);
+        Retrofit retrofit= BuilderRecommended.getInstance();
+        RecommendInterface recommendInterface=retrofit.create(RecommendInterface.class);
+        Call <List<RecommendEntity>> recommendEntityCall=recommendInterface.postlog();
+        recommendEntityCall.enqueue(new Callback <List<RecommendEntity>>() {
+
+            @Override
+            public void onResponse(Call <List<RecommendEntity>> call, Response< List<RecommendEntity>> response) {
+                List<RecommendEntity> recommendEntity=response.body();
+                RecommendedAdapter recommendedAdapter=new RecommendedAdapter(recommendEntity,Home.this);
+                recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+                recyclerView.setAdapter(recommendedAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<List<RecommendEntity>> call, Throwable t) {
+                Toast.makeText(getContext(), "Not able to get recommended products", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+
+
     }
 
     public void SliderApi(String catName) {
@@ -206,9 +229,11 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
         recommendDataList.add(new Recommended_Model("Employee 13", 112,"https://spng.subpng.com/20180331/pke/kisspng-computer-icons-user-profile-female-avatar-user-5abff415c1e818.9933493415225293017943.jpg"));
         recommendDataList.add(new Recommended_Model("Employee 14", 113,"https://top-madagascar.com/assets/images/admin/user-admin.png"));}
 
-    @Override
-    public void onUserClick(Recommended_Model recommended_model,View view, int position) {
-        startActivity(new Intent(getContext(), ProductFullView.class));
 
+
+    @Override
+    public void onUserClick(RecommendEntity recommendEntity, View view, int position) {
+        Intent i=new Intent(getContext(),ProductFullView.class);
+        startActivity(i);
     }
 }

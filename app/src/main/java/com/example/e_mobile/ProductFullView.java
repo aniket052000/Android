@@ -50,7 +50,7 @@ public class ProductFullView extends AppCompatActivity {
 
         Retrofit retrofit= BuilderProductView.getInstance();
         ProductFullViewInterface productFullViewInterface=retrofit.create(ProductFullViewInterface.class);
-        Call<ProductEntity> productEntityCall=productFullViewInterface.postLog("2");
+        Call<ProductEntity> productEntityCall=productFullViewInterface.postLog("61f26c8e1e5b0c407a048b67");
         productEntityCall.enqueue(new Callback<ProductEntity>() {
             @Override
             public void onResponse(Call<ProductEntity> call, Response<ProductEntity> response) {

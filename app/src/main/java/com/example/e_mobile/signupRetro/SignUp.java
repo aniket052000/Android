@@ -2,7 +2,9 @@ package com.example.e_mobile.signupRetro;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -55,6 +57,18 @@ public class SignUp extends AppCompatActivity {
     }
 
     public void signupAPI(String name, String email, String password, String address) {
+
+        SharedPreferences sharedPreferences=getSharedPreferences("com.example.inkedpages", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString("email",email);
+        editor.putString("username",name);
+        editor.putString("address",address);
+
+
+
+
+
 
         Retrofit retrofit = BuilderSignup.getInstance();
         SignupEntity signupEntity = new SignupEntity(name, email, password, address);

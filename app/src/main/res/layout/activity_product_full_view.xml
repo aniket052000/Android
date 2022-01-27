@@ -9,10 +9,7 @@
     tools:layout_editor_absoluteY="1dp"
     android:background="@color/white"
     >
-
     <androidx.constraintlayout.widget.ConstraintLayout
-
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".productRetro.ProductFullView">
@@ -123,29 +120,7 @@
             app:layout_constraintHorizontal_bias="0.928"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/proattribute5">
-
-
         </Button>
-
-
-        <!--        <Button-->
-<!--            android:id="@+id/Probuy"-->
-<!--            android:layout_width="184dp"-->
-<!--            android:layout_height="83dp"-->
-<!--            android:text="Buy now"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            tools:layout_editor_absoluteY="648dp" />-->
-
-<!--        <Button-->
-<!--            android:id="@+id/ProAdd"-->
-<!--            android:layout_width="194dp"-->
-<!--            android:layout_height="76dp"-->
-<!--            android:layout_marginEnd="16dp"-->
-<!--            android:text="Add to cart"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            tools:layout_editor_absoluteY="650dp" />-->
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 

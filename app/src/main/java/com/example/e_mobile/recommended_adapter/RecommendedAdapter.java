@@ -11,27 +11,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.e_mobile.R;
-import com.example.e_mobile.recommended_model.Recommended_Model;
+
+import com.example.e_mobile.recommendRetro.RecommendEntity;
 
 import java.util.List;
 
 public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.ViewHolder> {
-    private final List<Recommended_Model> recommendedDataList;
+    private final List<RecommendEntity> recommendedDataList;
     private final RecommendedDataInterface recommendedDataInterface;
 
-    public RecommendedAdapter(List<Recommended_Model> recommendedDataList, RecommendedDataInterface recommendedDataInterface) {
+    public RecommendedAdapter(List<RecommendEntity> recommendedDataList, RecommendedDataInterface recommendedDataInterface) {
         this.recommendedDataInterface = recommendedDataInterface;
         this.recommendedDataList = recommendedDataList;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Recommended_Model recommended_model=recommendedDataList.get(position);
-        holder.name.setText(recommended_model.getName()+"");
-        holder.price.setText(recommended_model.getPrice()+"");
-        Glide.with(holder.imgProduct.getContext()).load(recommended_model.getImageUrl()).placeholder(R.drawable.ic_baseline_person).into(holder.imgProduct);
+        RecommendEntity recommendEntity=recommendedDataList.get(position);
+        holder.name.setText(recommendEntity.getProductName()+"");
+        holder.price.setText(recommendEntity.getMerchant().getPrice()+"");
+        Glide.with(holder.imgProduct.getContext()).load(recommendEntity.getImage()).placeholder(R.drawable.ic_baseline_person).into(holder.imgProduct);
         holder.rootview.setOnClickListener(view -> {
-            recommendedDataInterface.onUserClick(recommended_model,view, holder.getAdapterPosition());
+            recommendedDataInterface.onUserClick(recommendEntity,view, holder.getAdapterPosition());
         });
     }
 
@@ -47,7 +48,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         return new RecommendedAdapter.ViewHolder(view);
     }
     public interface RecommendedDataInterface{
-        void onUserClick(Recommended_Model recommended_model,View view,int position);
+        void onUserClick(RecommendEntity recommendEntity,View view,int position);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
