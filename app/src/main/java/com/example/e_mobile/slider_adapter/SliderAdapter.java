@@ -1,21 +1,41 @@
 package com.example.e_mobile.slider_adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.e_mobile.Dummy;
+import com.example.e_mobile.Product;
 import com.example.e_mobile.R;
+import com.example.e_mobile.RetrofitInterfaces.SignupInterface;
+import com.example.e_mobile.RetrofitInterfaces.SliderInterface;
+import com.example.e_mobile.builder.BuilderSignup;
+import com.example.e_mobile.productRetro.ProductEntity;
+import com.example.e_mobile.signupRetro.Respentity;
+import com.example.e_mobile.signupRetro.SignUp;
+import com.example.e_mobile.signupRetro.SignupEntity;
 import com.example.e_mobile.slider_model.SliderModel;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterViewHolder> {
 
     private final List<SliderModel> mSliderItems;
+    SliderAdapter.OnItemClickListener mListener;
 
     public SliderAdapter(Context context, List<SliderModel> mSliderItems) {
         this.mSliderItems = mSliderItems;
@@ -38,7 +58,28 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapter
                 .load(sliderItem.getImgUrl())
                 .fitCenter()
                 .into(viewHolder.imageViewBackground);
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mListener != null) {
+                    if (position != RecyclerView.NO_POSITION) {
+                        mListener.onItemClick(position);
+                    }
+                }
+
+            }
+        });
+
+
     }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);}
+
+    // lets create the set onclick method
+    public void setOnItemClickListener(SliderAdapter.OnItemClickListener listener) {
+        mListener = listener; }
 
 
 

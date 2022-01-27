@@ -1,9 +1,11 @@
 package com.example.e_mobile;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,31 +22,30 @@ import com.example.e_mobile.catagory_model.CatagoryModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Catagory extends Fragment implements CatagoryAdapter.CatagoryDataInterface {
+public class Catagory extends AppCompatActivity implements CatagoryAdapter.CatagoryDataInterface {
 
-
-    public Catagory() {
-
-    }
 
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_catagory, container, false);
-    }
-
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void onCreate( Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_catagory);
         List<CatagoryModel> catagoryModels = new ArrayList<>();
         generateUserData(catagoryModels);
-        RecyclerView recyclerView = view.findViewById(R.id.cartrecycler);
+        RecyclerView recyclerView = findViewById(R.id.catagoryrecycler);
         CatagoryAdapter catagoryAdapter = new CatagoryAdapter(catagoryModels, Catagory.this);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.setAdapter(catagoryAdapter);
     }
+
+//    @Override
+//    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+//        // Inflate the layout for this fragment
+//        return inflater.inflate(R.layout.fragment_catagory, container, false);
+//    }
+
+
+
 
     private void generateUserData(List<CatagoryModel> catagoryModelList) {
 
@@ -67,6 +68,7 @@ public class Catagory extends Fragment implements CatagoryAdapter.CatagoryDataIn
 
     @Override
     public void onUserClick(CatagoryModel catagoryModel) {
-
+//
+//        Intent i=new Intent(this,Pro)
     }
 }

@@ -12,13 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.example.e_mobile.cart_adapter.CartAdapter;
 import com.example.e_mobile.cart_model.CartModel;
-import com.example.e_mobile.recommended_adapter.RecommendedAdapter;
-import com.example.e_mobile.recommended_model.Recommended_Model;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +73,6 @@ public class Cart extends Fragment implements CartAdapter.CartDataInterface{
 
     @Override
     public void onUserClick(CartModel cartModel,View view, int position) {
-        startActivity(new Intent(getContext(),Product.class));
+        startActivity(new Intent(getContext(), ProductFullView.class));
     }
 }

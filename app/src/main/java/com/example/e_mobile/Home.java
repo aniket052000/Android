@@ -4,8 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
+//import com.example.e_mobile.productRetro.ProductFullView;
+import com.example.e_mobile.RetrofitInterfaces.SliderInterface;
+import com.example.e_mobile.builder.BuilderSignup;
+import com.example.e_mobile.productRetro.ProductEntity;
 import com.example.e_mobile.recommended_adapter.RecommendedAdapter;
 import com.example.e_mobile.recommended_model.Recommended_Model;
+import com.example.e_mobile.signupRetro.Respentity;
+import com.example.e_mobile.signupRetro.SignUp;
 import com.example.e_mobile.slider_adapter.SliderAdapter;
 import com.example.e_mobile.slider_model.SliderModel;
 import com.smarteist.autoimageslider.SliderView;
@@ -20,13 +26,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class Home extends Fragment implements RecommendedAdapter.RecommendedDataInterface {
-    String url1 = "https://www.thespruceeats.com/thmb/nvKn0U92Cw5PPZsERaZWgmb8VHY=/2000x1500/filters:fill(auto,1)/Whiskey-GettyImages-139555513-59a3738e68e1a20013413b60.jpg";
-    String url2 = "https://images.hindustantimes.com/rf/image_size_630x354/HT/p2/2018/10/03/Pictures/_4fa6ba5a-c6f3-11e8-bbf7-ccd0803112e5.jpg";
-    String url3 = "https://site-cdn.givemesport.com/images/20/06/14/7d3f54214de386e86c07640f4d204424/960.jpg";
-
+    String url1 = "https://images.theconversation.com/files/2982/original/3600947113_fe7208d8a8_b.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=926&fit=clip"; // Daru
+    String url2 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQV4PnR4TldWDpedxe0GOT7bz1bU0VI0CbtA&usqp=CAU";   // Game
+    String url3 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaqxg8sKlxVsGdJ3UVvhoHThp43G8kJlpkg&usqp=CAU";  // Cigarattes
+    String url4 = "https://i.ytimg.com/vi/rNzg-_lZZuw/maxresdefault.jpg";    // Food Packet
+    String url5 = "https://image.shutterstock.com/image-vector/various-meds-pills-capsules-blisters-260nw-1409823341.jpg";   // Dava
+    public String p;
     public Home() {
         // Required empty public constructor
     }
@@ -50,6 +64,9 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
         sliderDataArrayList.add(new SliderModel(url1));
         sliderDataArrayList.add(new SliderModel(url2));
         sliderDataArrayList.add(new SliderModel(url3));
+        sliderDataArrayList.add(new SliderModel(url4));
+        sliderDataArrayList.add(new SliderModel(url5));
+
 
         // passing this array list inside our adapter class.
         SliderAdapter adapter = new SliderAdapter(view.getContext(), sliderDataArrayList);
@@ -73,6 +90,63 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
         // to start autocycle below method is used.
         sliderView.startAutoCycle();
 
+        adapter.setOnItemClickListener(new SliderAdapter.OnItemClickListener() {
+
+            @Override public void onItemClick(int position)
+            {
+
+//                String[] cname = {"drinks", "game", "cigarette", "food", "healthcare"};
+                p = String.valueOf(position);
+
+                if (p.equals("0")) {
+                    SliderApi("Drinks");
+//                    Toast.makeText(SliderAdapter.this, "Please enter all details", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (p.equals("1")) {
+                    SliderApi("Healthcare");
+//                    Toast.makeText(SliderAdapter.this, "Please enter all details", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (p.equals("2")) {
+                    SliderApi("Game");
+//                    Toast.makeText(SliderAdapter.this, "Please enter all details", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+//
+//                //List<ProductModel> productModelList = new ArrayList<>();
+//
+//                String s = cname[position];
+//                List<ProductModel> productModelList = generateProductData(s);
+
+
+//                if(p.equals("1"))
+//                {
+////                    String categoryName="";
+//                    //ProductDto productDto=getProductDetailsByCategory(categoryName);
+//
+//
+//                    // Builder logic for game product retrieval
+//                    //ProductDto fun(int pos)
+//
+//                }
+//                  ......
+//                else if(p.equals("0"))
+//                {
+////                    Intent intent = new Intent(getContext(), DrinksShow.class);
+////                    startActivity(intent);
+//                }
+//
+////                Intent intent = new Intent(getContext(), GamesShow.class);
+////                startActivity(intent);
+
+                //Toast.makeText(getContext(), p+"...", Toast.LENGTH_SHORT).show();
+                //Intent intent = new Intent(getContext(), Product.class);
+                //startActivity(intent);
+
+            }
+        });
+
 
         List<Recommended_Model> recommended_models=new ArrayList<>();
         generateUserData(recommended_models);
@@ -81,6 +155,36 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.setAdapter(recommendedAdapter);
     }
+
+    public void SliderApi(String catName) {
+
+        Retrofit retrofit = BuilderSignup.getInstance();
+//        SignupEntity signupEntity = new SignupEntity(name, email, password, address);
+        SliderInterface sliderInterface = retrofit.create(SliderInterface.class);
+        Call<List<ProductEntity>> productListCall = sliderInterface.postLog(catName);
+        productListCall.enqueue(new Callback<List<ProductEntity>>() {
+            @Override
+            public void onResponse(Call<List<ProductEntity>> call, Response<List<ProductEntity>> response) {
+//                if(response.body()==null){
+//                    Toast.makeText(Dummy.this, "User mail is already registered", Toast.LENGTH_SHORT).show();
+//                }
+//                Toast.makeText(SignUp.this, "Signin Successful", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SignUp.this, response.body().getStatus(), Toast.LENGTH_SHORT).show();
+//                startActivity(new Intent(getApplicationContext(), Dummy.class));
+                Toast.makeText(getContext(), "Everything is correct", Toast.LENGTH_SHORT).show();
+                Intent i=new Intent(getContext(), Product.class);
+                startActivity(i);
+            }
+
+
+            @Override
+            public void onFailure(Call<List<ProductEntity>> call, Throwable t) {
+                Toast.makeText(getContext(), "Everything is wrong", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SignUp.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void generateUserData(List<Recommended_Model> recommendDataList) {
         recommendDataList.add(new Recommended_Model("Employee 1", 100,"https://fortmyersradon.com/wp-content/uploads/2019/12/dummy-user-img-1.png"));
         recommendDataList.add(new Recommended_Model("Employee 2", 101,"https://d2cax41o7ahm5l.cloudfront.net/mi/speaker-photo/appliedmicrobiology-minl-2018-Rucha-Ridhorkar-62007-7135.png"));
@@ -99,7 +203,7 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
 
     @Override
     public void onUserClick(Recommended_Model recommended_model,View view, int position) {
-        startActivity(new Intent(getContext(),Product.class));
+        startActivity(new Intent(getContext(), ProductFullView.class));
 
     }
 }

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextClock;
 import android.widget.TextView;
 
@@ -30,6 +31,8 @@ public class Profile extends Fragment {
         View v=inflater.inflate(R.layout.fragment_profile, container, false);
         TextView textAcc= (TextView) v.findViewById(R.id.PAccount);
         TextView textOrder=(TextView) v.findViewById(R.id.POrderHistory);
+        TextView logout=(TextView) v.findViewById(R.id.PLogOut);
+
         textAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
