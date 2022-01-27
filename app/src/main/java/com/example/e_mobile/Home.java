@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 //import com.example.e_mobile.productRetro.ProductFullView;
 import com.example.e_mobile.RetrofitInterfaces.SliderInterface;
+import com.example.e_mobile.builder.BuilderProduct;
 import com.example.e_mobile.builder.BuilderSignup;
 import com.example.e_mobile.productRetro.ProductEntity;
 import com.example.e_mobile.recommended_adapter.RecommendedAdapter;
@@ -23,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -158,7 +160,9 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
 
     public void SliderApi(String catName) {
 
-        Retrofit retrofit = BuilderSignup.getInstance();
+
+        Log.d("ABBBBBBBBBBBBBBBBBBB", "SliderApi Call..........");
+        Retrofit retrofit = BuilderProduct.getInstance();
 //        SignupEntity signupEntity = new SignupEntity(name, email, password, address);
         SliderInterface sliderInterface = retrofit.create(SliderInterface.class);
         Call<List<ProductEntity>> productListCall = sliderInterface.postLog(catName);
@@ -172,6 +176,7 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
 //                Toast.makeText(SignUp.this, response.body().getStatus(), Toast.LENGTH_SHORT).show();
 //                startActivity(new Intent(getApplicationContext(), Dummy.class));
                 Toast.makeText(getContext(), "Everything is correct", Toast.LENGTH_SHORT).show();
+
                 Intent i=new Intent(getContext(), Product.class);
                 startActivity(i);
             }
