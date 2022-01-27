@@ -49,9 +49,9 @@ public class Cart extends Fragment implements CartAdapter.CartDataInterface{
         recyclerView.setAdapter(cartAdapter);
 
 
-
-
     }
+
+
 
     private void generateUserData(List<CartModel> cartModelList) {
 

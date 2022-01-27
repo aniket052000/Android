@@ -2,7 +2,9 @@ package com.example.e_mobile.loginRetro;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,10 +48,15 @@ public class Login extends AppCompatActivity {
 
     }
 
-    public void loginAPI(String mail,String pwd){
+    public void loginAPI(String email,String pwd){
+        SharedPreferences sharedPreferences=getSharedPreferences("com.example.inkedpages", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString("email",email);
+
         Retrofit retrofit= BuilderSignup.getInstance();
 
-        LoginEntity loginEntity=new LoginEntity(mail,pwd);
+        LoginEntity loginEntity=new LoginEntity(email,pwd);
 
         LoginInterface loginInterface = retrofit.create(LoginInterface.class);
 
