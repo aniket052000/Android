@@ -100,21 +100,21 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
 //                String[] cname = {"drinks", "game", "cigarette", "food", "healthcare"};
                 p = String.valueOf(position);
 
-                if (p.equals("0")) {
-                    SliderApi("Drinks");
-//                    Toast.makeText(SliderAdapter.this, "Please enter all details", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (p.equals("1")) {
-                    SliderApi("Healthcare");
-//                    Toast.makeText(SliderAdapter.this, "Please enter all details", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (p.equals("2")) {
-                    SliderApi("Game");
-//                    Toast.makeText(SliderAdapter.this, "Please enter all details", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+//                if (p.equals("0")) {
+//                    //SliderApi("Drinks");
+////                    Toast.makeText(SliderAdapter.this, "Please enter all details", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                if (p.equals("1")) {
+//                    //SliderApi("Healthcare");
+////                    Toast.makeText(SliderAdapter.this, "Please enter all details", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                if (p.equals("2")) {
+//                    //SliderApi("Game");
+////                    Toast.makeText(SliderAdapter.this, "Please enter all details", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
 //
 //                //List<ProductModel> productModelList = new ArrayList<>();
 //
@@ -142,9 +142,9 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
 ////                Intent intent = new Intent(getContext(), GamesShow.class);
 ////                startActivity(intent);
 
-                //Toast.makeText(getContext(), p+"...", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(getContext(), Product.class);
-                //startActivity(intent);
+                Toast.makeText(getContext(), p+"...", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), Product.class);
+                startActivity(intent);
 
             }
         });
@@ -175,7 +175,7 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
 //                Toast.makeText(SignUp.this, "Signin Successful", Toast.LENGTH_SHORT).show();
 //                Toast.makeText(SignUp.this, response.body().getStatus(), Toast.LENGTH_SHORT).show();
 //                startActivity(new Intent(getApplicationContext(), Dummy.class));
-                Toast.makeText(getContext(), "Everything is correct", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Everything is correct" , Toast.LENGTH_SHORT).show();
 
                 Intent i=new Intent(getContext(), Product.class);
                 startActivity(i);

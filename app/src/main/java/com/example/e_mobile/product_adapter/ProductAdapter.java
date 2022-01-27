@@ -39,7 +39,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Viewhold
         holder.attribute4.setText(productEntity.getAttribute4());
 
         Glide.with(holder.itemView)
-                .load(productEntity.getImageUrl())
+                .load(productEntity.getImage())
                 .fitCenter()
                 .into(holder.productImage);
 

@@ -3,73 +3,45 @@ package com.example.e_mobile.productRetro;
 import com.example.e_mobile.productRetro.MerchantEntity;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ProductEntity {
-    @SerializedName("productID")
-    private String productID;
-
-    @SerializedName("grandTotal")
-    private double grandTotal;
-
-    @SerializedName("productName")
+public class ProductEntity implements Serializable {
+    private String productId;
     private String productName;
-
-    @SerializedName("categoryName")
     private String categoryName;
-
-    @SerializedName("description")
-    private String description;
-
-    @SerializedName("orderCount")
+    private List<MerchantEntity> merchantList;
+    private String image;
     private Long orderCount;
-
-    @SerializedName("attribute1")
+    private String description;
     private String attribute1;
-
-    @SerializedName("attribute2")
     private String attribute2;
-
-    @SerializedName("attribute3")
     private String attribute3;
-
-    @SerializedName("attribute4")
     private String attribute4;
-
-    @SerializedName("attribute5")
     private String attribute5;
 
-    @SerializedName("merchantList")
-    private List<MerchantEntity> merchantEntityList;
-
-    @SerializedName("usp")
-    private String usp;
-
-    @SerializedName("imageUrl")
-    private String imageUrl;
-
-
-    public ProductEntity(String productID, double grandTotal, String productName, String categoryName, Long orderCount, String attribute1, String attribute2, String attribute3, String attribute4, String attribute5, List<MerchantEntity> merchantEntityList, String usp, String description, String imageUrl) {
-        this.productID = productID;
-        this.grandTotal = grandTotal;
+    public ProductEntity(String productId, String productName, String categoryName, Long orderCount, String attribute1, String attribute2, String attribute3, String attribute4, String attribute5,  List<MerchantEntity> merchantList,  String description, String image ) {
+        this.productId = productId;
         this.productName = productName;
         this.categoryName = categoryName;
+        this.merchantList = merchantList;
+        this.image = image;
         this.orderCount = orderCount;
+        this.description = description;
         this.attribute1 = attribute1;
         this.attribute2 = attribute2;
         this.attribute3 = attribute3;
         this.attribute4 = attribute4;
         this.attribute5 = attribute5;
-        this.merchantEntityList = merchantEntityList;
-        this.usp = usp;
-        this.description = description;
-        this.imageUrl = imageUrl;
     }
 
-//    public ProductModel(String productID, double grandTotal) {
-//        this.productID = productID;
-//        this.grandTotal = grandTotal;
-//    }
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
 
     public String getProductName() {
         return productName;
@@ -87,12 +59,20 @@ public class ProductEntity {
         this.categoryName = categoryName;
     }
 
-    public String getDescription() {
-        return description;
+    public List<MerchantEntity> getMerchantList() {
+        return merchantList;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setMerchantList(List<MerchantEntity> merchantList) {
+        this.merchantList = merchantList;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Long getOrderCount() {
@@ -101,6 +81,14 @@ public class ProductEntity {
 
     public void setOrderCount(Long orderCount) {
         this.orderCount = orderCount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getAttribute1() {
@@ -141,47 +129,5 @@ public class ProductEntity {
 
     public void setAttribute5(String attribute5) {
         this.attribute5 = attribute5;
-    }
-
-    public List<MerchantEntity> getMerchantList() {
-        return merchantEntityList;
-    }
-
-    public void setMerchantList(List<MerchantEntity> merchantEntityList) {
-        this.merchantEntityList = merchantEntityList;
-    }
-
-    public String getUsp() {
-        return usp;
-    }
-
-    public void setUsp(String usp) {
-        this.usp = usp;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-
-
-    public String getProductID() {
-        return productID;
-    }
-
-    public void setProductID(String productID) {
-        this.productID = productID;
-    }
-
-    public double getGrandTotal() {
-        return grandTotal;
-    }
-
-    public void setGrandTotal(double grandTotal) {
-        this.grandTotal = grandTotal;
     }
 }
