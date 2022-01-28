@@ -178,7 +178,6 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
 
 
 
-
     }
 
     public void SliderApi(String catName) {
@@ -234,6 +233,7 @@ public class Home extends Fragment implements RecommendedAdapter.RecommendedData
     @Override
     public void onUserClick(RecommendEntity recommendEntity, View view, int position) {
         Intent i=new Intent(getContext(),ProductFullView.class);
+        i.putExtra("productId", recommendEntity.getProductId());
         startActivity(i);
     }
 }

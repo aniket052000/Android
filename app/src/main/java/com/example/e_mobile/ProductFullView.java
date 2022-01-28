@@ -4,11 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,8 +24,10 @@ import com.example.e_mobile.cartRetro.CartEntity;
 import com.example.e_mobile.cartRetro.CartProductEntity;
 import com.example.e_mobile.cart_adapter.CartAdapter;
 import com.example.e_mobile.loginRetro.Login;
+import com.example.e_mobile.productRetro.MerchantEntity;
 import com.example.e_mobile.productRetro.ProductEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,17 +44,36 @@ public class ProductFullView extends AppCompatActivity {
     TextView attribute3;
     TextView attribute4;
     TextView attribute5;
-    TextView price;
     Button addtocart;
+    String productId;
+    String merchantId;
+    Double price;
+    Button gotocart=findViewById(R.id.gotocart);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_full_view);
-        String productId=getIntent().getStringExtra("productId");
-        String merchantId=getIntent().getStringExtra("merchantId");
 
-        getProductFullView(productId);
+//        gotocart.setOnClickListener(view -> {
+//            Intent i=new Intent(ProductFullView.this,Cart.class);
+//            startActivity(i);
+//        });
+
+
+        Intent intent = this.getIntent();
+        productId=intent.getStringExtra("productId");
+
+        Bundle bundle = intent.getExtras();
+        ProductEntity productEntity = (ProductEntity) bundle.getSerializable("product");
+        List<MerchantEntity> merchantEntity = productEntity.getMerchantList();
+
+
+
+
+//        merchantId=getIntent().getStringExtra("merchantId");
+
+
         productName=findViewById(R.id.Proname);
         image=findViewById(R.id.ProImg);
         description=findViewById(R.id.prodes);
@@ -58,16 +82,29 @@ public class ProductFullView extends AppCompatActivity {
         attribute3=findViewById(R.id.proattribute3);
         attribute4=findViewById(R.id.proattribute4);
         attribute5=findViewById(R.id.proattribute5);
-        price=findViewById(R.id.Proprice);
+
+
+        getProductFullView(productId);
 
         addtocart=findViewById(R.id.PFVAddtocart);
+
+        List<String> spinnerList = new ArrayList<>();
+        Spinner spinnerMerchantProduct=findViewById(R.id.merchant_list);
+
+        for(MerchantEntity merchantEntityobj: merchantEntity )
+        {
+            String spinnerDetails = "Merchant :- " + merchantEntityobj.getMerchantId() + "Price :- " + merchantEntityobj.getPrice();
+            spinnerList.add(spinnerDetails);
+        }
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(ProductFullView.this, android.R.layout.simple_spinner_dropdown_item, spinnerList);
+        spinnerMerchantProduct.setAdapter(stringArrayAdapter);
 
         addtocart.setOnClickListener(view -> {
 //            loginAPI(email.getText().toString(),pwd.getText().toString());
             SharedPreferences sharedPreferences=getSharedPreferences("com.example.inkedpages", Context.MODE_PRIVATE);
 
             String email=sharedPreferences.getString("email","Default");
-            Double price = Double.parseDouble(sharedPreferences.getString("price", "1"));
+            price = Double.parseDouble(sharedPreferences.getString("price", "1"));
             int quantity = Integer.parseInt(sharedPreferences.getString("quantity", "1"));
             Double grandTotal = Double.parseDouble(sharedPreferences.getString("grandTotal", "1"));
 
@@ -122,13 +159,10 @@ public class ProductFullView extends AppCompatActivity {
                 attribute3.setText(productEntityList.getAttribute3());
                 attribute4.setText(productEntityList.getAttribute4());
                 attribute5.setText(productEntityList.getAttribute5());
-                price.setText(String.valueOf(productEntityList.getMerchantList().get(0).getPrice()));
+//                price.setText(String.valueOf(productEntityList.getMerchantList().get(0).getPrice()));
                 Glide.with(image.getContext()).load(productEntityList.getImage()).placeholder(R.drawable.ic_baseline_person).into(image);
-
                 SharedPreferences sharedPreferences=getSharedPreferences("com.example.inkedpages", Context.MODE_PRIVATE);
-
                 SharedPreferences.Editor editor=sharedPreferences.edit();
-
 
                 editor.putString("quantity", "1");
                 editor.putString("merchantId", "0");

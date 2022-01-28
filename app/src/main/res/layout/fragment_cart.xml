@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ourlogo"
     tools:context=".Cart">
 
     <TextView
@@ -13,7 +14,7 @@
         android:layout_height="27dp"
         android:gravity="center"
         android:text="My cart"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="15dp"
 
 
@@ -40,7 +41,7 @@
         android:layout_height="41dp"
         android:gravity="center"
         android:text="Total"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cartrecycler" />
 
@@ -57,6 +58,8 @@
         android:layout_width="210dp"
         android:layout_height="67dp"
         android:text="Place order"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/ourlogo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/Ctotal"

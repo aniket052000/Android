@@ -22,7 +22,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@tools:sample/avatars"
+            android:background="@color/ourlogo"/>
 
         <TextView
             android:id="@+id/Proname"
@@ -36,15 +37,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ProImg" />
 
-        <TextView
-            android:id="@+id/Proprice"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="Price"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Proname" />
 
         <TextView
             android:id="@+id/prodes"
@@ -54,7 +46,7 @@
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Proprice" />
+            app:layout_constraintTop_toBottomOf="@+id/Proname" />
 
         <TextView
             android:id="@+id/proattribute1"
@@ -74,6 +66,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/proattribute1" />
+
         <TextView
             android:id="@+id/proattribute3"
             android:layout_width="match_parent"
@@ -81,8 +74,10 @@
             android:text="attribute"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/proattribute2" />
+
         <TextView
             android:id="@+id/proattribute4"
             android:layout_width="match_parent"
@@ -101,27 +96,53 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/proattribute4" />
+        <Spinner
+            android:id="@+id/merchant_list"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="Price"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proattribute5" />
+
 
         <Button
             android:layout_width="184dp"
             android:layout_height="80dp"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="@color/ourlogo"
             android:text="Buy now"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.071"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/proattribute5" />
+            app:layout_constraintTop_toBottomOf="@+id/merchant_list" />
 
         <Button
             android:id="@+id/PFVAddtocart"
             android:layout_width="184dp"
             android:layout_height="80dp"
             android:layout_marginTop="4dp"
+            android:backgroundTint="@color/ourlogo"
             android:text="Add to cart"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.928"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/proattribute5">
-        </Button>
+            app:layout_constraintTop_toBottomOf="@+id/merchant_list" />
+
+        <Button
+            android:id="@+id/gotocart"
+            android:layout_width="184dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="19dp"
+            android:text="got to cart->"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/ourlogo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/PFVAddtocart" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 

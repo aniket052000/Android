@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.example.e_mobile.signupRetro.SignUp;
+
 
 public class Profile extends Fragment {
 
@@ -27,26 +29,23 @@ public class Profile extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v=inflater.inflate(R.layout.fragment_profile, container, false);
-        TextView textAcc= (TextView) v.findViewById(R.id.PAccount);
-        TextView textOrder=(TextView) v.findViewById(R.id.POrderHistory);
-        TextView logout=(TextView) v.findViewById(R.id.PLogOut);
 
-        textAcc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i=new Intent(getContext(),Account.class);
-                startActivity(i);
-            }
+        View v=inflater.inflate(R.layout.fragment_profile, container, false);
+
+        v.findViewById(R.id.PAccount).setOnClickListener(view -> {
+            startActivity(new Intent(getContext(), Account.class));
         });
-        textOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i=new Intent(getContext(),OrderHistory.class);
-                startActivity(i);
-            }
+
+
+        v.findViewById(R.id.POrderHistory).setOnClickListener(view -> {
+            startActivity(new Intent(getContext(), OrderHistory.class));
         });
+
+
+        v.findViewById(R.id.PLogOut).setOnClickListener(view -> {
+            startActivity(new Intent(getContext(), Logout.class));
+        });
+
 
 
 

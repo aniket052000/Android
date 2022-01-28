@@ -11,12 +11,15 @@
     android:backgroundTint="@color/white"
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp"
-    tools:layout_editor_absoluteX="5dp">
+    tools:layout_editor_absoluteX="5dp"
+    >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+
+        >
 
 
         <ImageView

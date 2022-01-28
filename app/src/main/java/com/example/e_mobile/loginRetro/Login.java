@@ -53,6 +53,7 @@ public class Login extends AppCompatActivity {
 
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString("email",email);
+        editor.commit();
 
         Retrofit retrofit= BuilderSignup.getInstance();
 

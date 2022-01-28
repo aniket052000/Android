@@ -28,10 +28,10 @@
         <activity
             android:name=".AfterSplash"
             android:exported="false" />
-        <activity
-            android:name=".productRetro.ProductFullView"
-            android:exported="false" />
-        <activity
+<!--        <activity-->
+<!--            android:name=".productRetro"-->
+<!--            android:exported="false" />-->
+<!--        <activity-->
             android:name=".Account"
             android:exported="false" />
         <activity

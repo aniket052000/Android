@@ -11,7 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_centerHorizontal="true"
-        android:contentDescription="@string/app_name" />
+        android:contentDescription="@string/app_name"
+        android:background="@color/ourlogo"
+        />
 
 <!--    <Button-->
 <!--        android:id="@+id/imgbutton"-->

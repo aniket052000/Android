@@ -14,7 +14,7 @@ public class BuilderSignup {
         if(instance==null){
             synchronized (BuilderSignup.class){
                 if(instance==null){
-                    instance=new Retrofit.Builder().baseUrl("http://10.177.1.145:1000/").
+                    instance=new Retrofit.Builder().baseUrl("http://10.177.1.232:1000/").
                             addConverterFactory(GsonConverterFactory.create()).client(new OkHttpClient()).build();
                 }
             }

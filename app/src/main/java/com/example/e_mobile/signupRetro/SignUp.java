@@ -64,6 +64,7 @@ public class SignUp extends AppCompatActivity {
         editor.putString("email",email);
         editor.putString("username",name);
         editor.putString("address",address);
+        editor.commit();
 
 
 

@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ourlogo"
     tools:context=".Cart">
 
     <TextView
@@ -13,7 +14,7 @@
         android:layout_height="27dp"
         android:gravity="center"
         android:text="My cart"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="15dp"
 
 
