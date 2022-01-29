@@ -4,13 +4,13 @@ public class CartProductEntity {
     private String productId;
     private int quantity;
     private String merchantId;
-    private double price;
+    private String merchantName;
 
-    public CartProductEntity(String productId, int quantity, String merchantId, double price) {
+    public CartProductEntity(String productId, int quantity, String merchantId, String merchantName) {
         this.productId = productId;
         this.quantity = quantity;
         this.merchantId = merchantId;
-        this.price = price;
+        this.merchantName = merchantName;
     }
 
     public String getProductId() {
@@ -37,11 +37,11 @@ public class CartProductEntity {
         this.merchantId = merchantId;
     }
 
-    public double getPrice() {
-        return price;
+    public String getMerchantName() {
+        return merchantName;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setMerchantName(String merchantName) {
+        this.merchantName = merchantName;
     }
 }
