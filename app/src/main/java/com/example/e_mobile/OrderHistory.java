@@ -1,29 +1,36 @@
 package com.example.e_mobile;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.util.Log;
+import android.widget.Toast;
 
-import com.example.e_mobile.cart_adapter.CartAdapter;
-import com.example.e_mobile.cart_model.CartModel;
-import com.example.e_mobile.orderHistory_adapter.OrderHistoryAdapter;
+import com.example.e_mobile.RetrofitInterfaces.OrderInterface;
+import com.example.e_mobile.builder.BuilderCart;
+import com.example.e_mobile.cartRetro.CartRecieveEntity;
+import com.example.e_mobile.orderHistory_adapter.OrderHistoryItemsAdapter;
 import com.example.e_mobile.orderHistory_model.OrderHistoryModel;
+import com.example.e_mobile.orderhistoryRetro.OrderHistoryEntity;
+import com.example.e_mobile.orderhistoryRetro.OrderItemsEntity;
 
-import java.util.ArrayList;
-import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
-public class OrderHistory extends AppCompatActivity implements OrderHistoryAdapter.OrderHistoryDataInterface{
 
+public class OrderHistory extends AppCompatActivity implements OrderHistoryItemsAdapter.OrderHistoryItemsInterface{
+
+    String email;
 
     public OrderHistory() {
         // Required empty public constructor
@@ -33,47 +40,53 @@ public class OrderHistory extends AppCompatActivity implements OrderHistoryAdapt
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_order_history);
-        List<OrderHistoryModel> orderHistoryModels=new ArrayList<>();
-        generateUserData(orderHistoryModels);
-        RecyclerView recyclerView=findViewById(R.id.orderhistoryrecycler);
-        OrderHistoryAdapter orderHistoryAdapter=new OrderHistoryAdapter(orderHistoryModels,  OrderHistory.this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(orderHistoryAdapter);
+
+
+
+        OrderHistoryDetailsApi();
 
     }
 
-//    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//
-//    }
+    public void OrderHistoryDetailsApi() {
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_order_history, container, false);
-//    }
-    private void generateUserData(List<OrderHistoryModel> orderHistoryModelList) {
 
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 1", 100));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 2", 101));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 3", 102));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 4", 103));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 5", 104));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 6", 105));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 7", 106));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 8", 107));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 9", 108));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 10", 109));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 11", 110));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 12", 111));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 13", 112));
-        orderHistoryModelList.add(new OrderHistoryModel("Employee 14", 113));
+        Retrofit retrofit = BuilderCart.getInstance();
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
+        email = sharedPreferences.getString("email", "Default");
+
+        Call<OrderHistoryEntity> orderHistoryEntityCall = retrofit.create(OrderInterface.class).postLogRecieve(email);
+
+        Log.d("Hellllllllllllooooo", "1SliderAPI");
+
+        orderHistoryEntityCall.enqueue(new Callback<OrderHistoryEntity>() {
+            @Override
+            public void onResponse(Call<OrderHistoryEntity> call, Response<OrderHistoryEntity> response) {
+
+                RecyclerView recyclerView = findViewById(R.id.cartrecycler);
+                OrderHistoryItemsAdapter orderHistoryItemsAdapter = new OrderHistoryItemsAdapter(response.body().getOrderList(),  OrderHistory.this);
+                recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+                recyclerView.setAdapter(orderHistoryItemsAdapter);
+
+                //Toast.makeText(getApplicationContext(), response.body().getCa.get(0).getProductName(), Toast.LENGTH_SHORT).show();
+                // Toast.makeText(CartActivity.this,response.body().getUserEmail(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Product.this, "Everything is correct", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFailure(Call<OrderHistoryEntity> call, Throwable t) {
+                Toast.makeText(OrderHistory.this, "Everything is wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
-    public void onUserClick(OrderHistoryModel orderHistoryModel) {
+    public void onUserClick(OrderItemsEntity orderItemsEntity) {
+
+        Toast.makeText(this, "Image Clicked for" + orderItemsEntity.getOrderId(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, OrderHistoryProducts.class);
+        intent.putExtra("orderId",orderItemsEntity.getOrderId());
+        startActivity(intent);
 
     }
 }

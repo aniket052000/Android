@@ -3,6 +3,7 @@ package com.example.e_mobile;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,6 +52,7 @@ public class ProductFullView extends AppCompatActivity {
     Double price;
     String email;
     Button buynow;
+    Button gotocart;
     //Button gotocart = findViewById(R.id.gotocart);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,8 @@ public class ProductFullView extends AppCompatActivity {
         ProductFullApi(productId);
         addtocart = findViewById(R.id.PFVAddtocart);
         buynow = findViewById(R.id.gotocart);
+        gotocart=findViewById(R.id.gotocart);
+
 
         //ProductEntity productEntity = ProductFullApi(productId);
         // merchantId=getIntent().getStringExtra("merchantId");
@@ -82,7 +86,7 @@ public class ProductFullView extends AppCompatActivity {
         // List<MerchantEntity> merchantEntity = productEntity.getMerchantList();
         addtocart.setOnClickListener(view -> {
 //            loginAPI(email.getText().toString(),pwd.getText().toString());
-            SharedPreferences sharedPreferences = getSharedPreferences("com.example.inkedpages", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
             email = sharedPreferences.getString("email", "Default");
 
 //            price = Double.parseDouble(sharedPreferences.getString("price", "1"));
@@ -100,6 +104,11 @@ public class ProductFullView extends AppCompatActivity {
             Log.d("Hellllllllllllooooo", "1SliderAPI");
 
 
+        });
+
+        gotocart.setOnClickListener(view -> {
+            Intent i=new Intent(ProductFullView.this,CartActivity.class);
+            startActivity(i);
         });
 
 
@@ -157,7 +166,7 @@ public class ProductFullView extends AppCompatActivity {
 
 
 
-                SharedPreferences sharedPreferences = getSharedPreferences("com.example.inkedpages", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -251,7 +260,7 @@ public class ProductFullView extends AppCompatActivity {
                 attribute5.setText(productEntityList.getAttribute5());
                 //price.setText(String.valueOf(productEntityList.getMerchantList().get(0).getPrice()));
                 Glide.with(image.getContext()).load(productEntityList.getImage()).placeholder(R.drawable.ic_baseline_person).into(image);
-                SharedPreferences sharedPreferences=getSharedPreferences("com.example.inkedpages", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences=getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor=sharedPreferences.edit();
                 editor.putString("quantity", "1");
                 editor.putString("merchantId", "0");

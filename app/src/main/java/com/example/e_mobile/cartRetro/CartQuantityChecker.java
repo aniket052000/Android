@@ -4,25 +4,12 @@ import java.io.Serializable;
 
 public class CartQuantityChecker implements Serializable {
 
-
-    private String userEmail;
     private String productId;
-    private int quantity;
     private String merchantId;
 
-    public CartQuantityChecker(String userEmail, String productId, int quantity, String merchantId) {
-        this.userEmail = userEmail;
+    public CartQuantityChecker(String productId, String merchantId) {
         this.productId = productId;
-        this.quantity = quantity;
         this.merchantId = merchantId;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
     }
 
     public String getProductId() {
@@ -31,14 +18,6 @@ public class CartQuantityChecker implements Serializable {
 
     public void setProductId(String productId) {
         this.productId = productId;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     public String getMerchantId() {

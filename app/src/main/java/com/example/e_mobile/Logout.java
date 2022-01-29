@@ -18,7 +18,7 @@ public class Logout extends AppCompatActivity {
         Button btYes=findViewById(R.id.btYes);
         Button btNo=findViewById(R.id.btNo);
         btYes.setOnClickListener(view -> {
-            SharedPreferences sharedPreferences=getSharedPreferences("com.example.inkedpages", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences=getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
             sharedPreferences.edit().clear().commit();
             Intent i=new Intent(Logout.this,AfterSplash.class);
             startActivity(i);

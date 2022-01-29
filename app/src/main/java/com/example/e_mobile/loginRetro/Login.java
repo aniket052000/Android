@@ -49,7 +49,7 @@ public class Login extends AppCompatActivity {
     }
 
     public void loginAPI(String email,String pwd){
-        SharedPreferences sharedPreferences=getSharedPreferences("com.example.inkedpages", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences=getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString("email",email);

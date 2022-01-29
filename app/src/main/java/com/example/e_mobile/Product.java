@@ -46,7 +46,7 @@ public class Product extends AppCompatActivity implements ProductAdapter.Product
 
     @Override
     public void onUserClick(ProductEntity productEntity) {
-//        SharedPreferences sharedPreferences=getSharedPreferences("com.example.inkedpages", Context.MODE_PRIVATE);
+//        SharedPreferences sharedPreferences=getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
 //        SharedPreferences.Editor editor=sharedPreferences.edit();
 //        editor.putString("productID",productEntity.getProductId());
 
