@@ -28,19 +28,24 @@ public class Cart extends Fragment implements CartAdapter.CartDataInterface{
 
     }
 
-
-
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_cart, container, false);
+
+
+
+
+
     }
 
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+
         List<CartModel> cartModels=new ArrayList<>();
         generateUserData(cartModels);
         RecyclerView recyclerView=view.findViewById(R.id.cartrecycler);

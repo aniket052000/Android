@@ -43,31 +43,6 @@ public class Product extends AppCompatActivity implements ProductAdapter.Product
     }
 
 
-//    private void generateProductData(List<ProductModel> productModelList , String catname)
-//    {
-//
-//        Retrofit retrofit = RetrofitBuilder.getInstance();
-//
-//        ProductAPI productAPI = retrofit.create(ProductAPI.class);
-//        Call<List<ProductModel>> users = productAPI.getProductByCategory();
-//
-//        Log.d("ABCCCCCCCCCCDFSSFDFFF", "Before Enque");
-//
-//
-//        users.enqueue(new Callback<List<ProductModel>>() {
-//            @Override
-//            public void onResponse(Call<List<ProductModel>> call, Response<List<ProductModel>> response) {
-//                Log.d("ABC", "Able to fetch data");
-//                List<ProductModel> productModelList = response.body();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<ProductModel>> call, Throwable t) {
-//                Toast.makeText(Product.this, "Not abble", Toast.LENGTH_SHORT).show();
-//                Log.d("ABCDDDDDDDDDDDDDDDDDDDD", t.getMessage());
-//            }
-//        });
-//    }
 
     @Override
     public void onUserClick(ProductEntity productEntity) {
@@ -79,9 +54,9 @@ public class Product extends AppCompatActivity implements ProductAdapter.Product
         Intent intent = new Intent(this, ProductFullView.class);
         String p = productEntity.getProductId();
         intent.putExtra("productId",productEntity.getProductId());
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("product", productEntity);
-        intent.putExtra("merchantId", productEntity.getMerchantList().get(0).getMerchantId());
+        //Bundle bundle = new Bundle();
+        //bundle.putSerializable("product", productEntity);
+        //intent.putExtra("merchantId", productEntity.getMerchantList().get(0).getMerchantId());
         startActivity(intent);
     }
 }

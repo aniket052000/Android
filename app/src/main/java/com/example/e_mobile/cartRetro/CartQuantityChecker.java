@@ -2,7 +2,7 @@ package com.example.e_mobile.cartRetro;
 
 import java.io.Serializable;
 
-public class AddToCart implements Serializable {
+public class CartQuantityChecker implements Serializable {
 
 
     private String userEmail;
@@ -10,7 +10,7 @@ public class AddToCart implements Serializable {
     private int quantity;
     private String merchantId;
 
-    public AddToCart(String userEmail, String productId, int quantity, String merchantId) {
+    public CartQuantityChecker(String userEmail, String productId, int quantity, String merchantId) {
         this.userEmail = userEmail;
         this.productId = productId;
         this.quantity = quantity;

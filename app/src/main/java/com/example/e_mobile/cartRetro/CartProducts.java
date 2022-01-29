@@ -1,16 +1,67 @@
 package com.example.e_mobile.cartRetro;
 
-public class CartProductEntity {
+public class CartProducts {
     private String productId;
     private int quantity;
     private String merchantId;
     private String merchantName;
+    private String image;
+    private String productName;
+    private double price;
+    private double subTotal;
 
-    public CartProductEntity(String productId, int quantity, String merchantId, String merchantName) {
+    //Receive for cart fragment
+    public CartProducts(String productId, int quantity, String merchantId, String merchantName, String image, String productName, double price, double subTotal) {
         this.productId = productId;
         this.quantity = quantity;
         this.merchantId = merchantId;
         this.merchantName = merchantName;
+        this.image = image;
+        this.productName = productName;
+        this.price = price;
+        this.subTotal = subTotal;
+    }
+
+    // Send
+    public CartProducts(String productId, int quantity, String merchantId, String merchantName) {
+        this.productId = productId;
+        this.quantity = quantity;
+        this.merchantId = merchantId;
+        this.merchantName = merchantName;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(double subTotal) {
+        this.subTotal = subTotal;
+    }
+
+
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public double getPrice() {
+        return price;
     }
 
     public String getProductId() {

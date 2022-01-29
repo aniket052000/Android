@@ -8,6 +8,7 @@
     tools:layout_editor_absoluteX="1dp"
     tools:layout_editor_absoluteY="1dp"
     android:background="@color/white"
+    android:paddingLeft="5dp"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -29,8 +30,9 @@
             android:id="@+id/Proname"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:text="Name"
+
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -49,6 +51,16 @@
             app:layout_constraintTop_toBottomOf="@+id/Proname" />
 
         <TextView
+            android:id="@+id/proUsp"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Usp"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/prodes" />
+
+        <TextView
             android:id="@+id/proattribute1"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -56,7 +68,7 @@
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/prodes" />
+            app:layout_constraintTop_toBottomOf="@+id/proUsp" />
         <TextView
             android:id="@+id/proattribute2"
             android:layout_width="match_parent"

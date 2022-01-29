@@ -34,7 +34,9 @@ public class Dummy extends AppCompatActivity{
                 case R.id.cart:
                     if(userLoggedIn)
                     {
-                        setCurrentFragment(cartobj);
+                        //setCurrentFragment(cartobj);
+                        Intent i = new Intent(Dummy.this, CartActivity.class);
+                        startActivity(i);
                     }
                     else {
                         Intent i = new Intent(Dummy.this, SignupOrLogin.class);

@@ -1,16 +1,19 @@
 package com.example.e_mobile.cartRetro;
 
+import java.util.List;
+
 public class CartEntity {
+
     private String id;
     private String userEmail;
     private Double grandTotal;
-    private CartProductEntity cartProductEntity;
+    private CartProducts cartProducts;
 
-    public CartEntity(String id, String userEmail, Double grandTotal, CartProductEntity cartProductEntity) {
-        this.id = id;
+
+    //For Send
+    public CartEntity(String userEmail, CartProducts cartProducts) {
         this.userEmail = userEmail;
-        this.grandTotal = grandTotal;
-        this.cartProductEntity = cartProductEntity;
+        this.cartProducts = cartProducts;
     }
 
     public String getId() {
@@ -37,11 +40,11 @@ public class CartEntity {
         this.grandTotal = grandTotal;
     }
 
-    public CartProductEntity getCartProductEntity() {
-        return cartProductEntity;
+    public CartProducts getCartProductEntity() {
+        return cartProducts;
     }
 
-    public void setCartProductEntity(CartProductEntity cartProductEntity) {
-        this.cartProductEntity = cartProductEntity;
+    public void setCartProductEntity(CartProducts cartProducts) {
+        this.cartProducts = cartProducts;
     }
 }
