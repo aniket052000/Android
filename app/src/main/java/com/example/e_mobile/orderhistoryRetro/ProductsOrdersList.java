@@ -1,6 +1,8 @@
 package com.example.e_mobile.orderhistoryRetro;
 
-public class ProductsOrdersList {
+import java.io.Serializable;
+
+public class ProductsOrdersList implements Serializable {
     private String productId;
     private String productName;
     private String merchantId;

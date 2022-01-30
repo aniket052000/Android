@@ -1,14 +1,15 @@
 package com.example.e_mobile.orderhistoryRetro;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class OrderItemsEntity {
+public class OrderItemsEntity implements Serializable {
     private String orderId;
     private String userEmail;
     List<ProductsOrdersList> productsList;
     private Double grandTotal;
 
-
+public OrderItemsEntity(){}
     public OrderItemsEntity(String orderId, String userEmail) {
         this.orderId = orderId;
         this.userEmail = userEmail;

@@ -59,6 +59,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/prodes" />
+        <TextView
+            android:id="@+id/proprice"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="price"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proUsp"
+            />
 
         <TextView
             android:id="@+id/proattribute1"
@@ -68,7 +78,7 @@
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/proUsp" />
+            app:layout_constraintTop_toBottomOf="@+id/proprice" />
         <TextView
             android:id="@+id/proattribute2"
             android:layout_width="match_parent"
@@ -111,7 +121,7 @@
         <Spinner
             android:id="@+id/merchant_list"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:text="Price"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
@@ -125,6 +135,7 @@
             android:layout_marginTop="4dp"
             android:backgroundTint="@color/ourlogo"
             android:text="Buy now"
+            android:id="@+id/buynow"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.071"

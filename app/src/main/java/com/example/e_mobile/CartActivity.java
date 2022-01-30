@@ -51,13 +51,15 @@ public class CartActivity extends AppCompatActivity implements CartRecieveAdapte
 
 
 
-         btn = findViewById(R.id.placeorder);
+        btn = findViewById(R.id.placeorder);
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
         email = sharedPreferences.getString("email", "Default");
 
-        btn.setOnClickListener(view -> {
 
+
+
+        btn.setOnClickListener(view -> {
             PlaceOrderApi(email);
 
         });
@@ -74,6 +76,7 @@ public class CartActivity extends AppCompatActivity implements CartRecieveAdapte
         cartInterfaceCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
+                Toast.makeText(CartActivity.this,"Order is successfully placed",Toast.LENGTH_SHORT).show();
                 Intent i=new Intent(CartActivity.this,Dummy.class);
                 startActivity(i);
             }
@@ -106,8 +109,11 @@ public class CartActivity extends AppCompatActivity implements CartRecieveAdapte
                 recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
                 recyclerView.setAdapter(cartRecieveAdapter);
 
+               // String grT = sharedPreferences.getString("grTotal", "Default");
+
                 totalp = findViewById(R.id.Totaldisplay1);
                 totalp.setText(response.body().getGrandTotal() + " ");
+
                 Toast.makeText(getApplicationContext(), response.body().getCartProductList().get(0).getProductName(), Toast.LENGTH_SHORT).show();
                // Toast.makeText(CartActivity.this,response.body().getUserEmail(), Toast.LENGTH_SHORT).show();
                 //Toast.makeText(Product.this, "Everything is correct", Toast.LENGTH_SHORT).show();

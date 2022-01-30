@@ -59,12 +59,12 @@ public class SignUp extends AppCompatActivity {
     public void signupAPI(String name, String email, String password, String address) {
 
         SharedPreferences sharedPreferences=getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
-
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString("email",email);
         editor.putString("username",name);
         editor.putString("address",address);
         editor.apply();
+
 
 
 

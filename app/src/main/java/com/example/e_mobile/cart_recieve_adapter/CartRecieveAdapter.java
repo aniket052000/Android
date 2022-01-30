@@ -42,6 +42,8 @@ public class CartRecieveAdapter extends RecyclerView.Adapter<CartRecieveAdapter.
     private Context context;
     String productId;
     double Total;
+    Integer bol;
+    Integer count;
 
     public CartRecieveAdapter(List<CartProducts> mcartProducts, CartDataInterface mcartDataInterface, Context context) {
         this.mcartProducts = mcartProducts;
@@ -72,7 +74,7 @@ public class CartRecieveAdapter extends RecyclerView.Adapter<CartRecieveAdapter.
         CartProducts cartProducts = mcartProducts.get(position);
         holder.name.setText(cartProducts.getProductName());
         holder.price.setText(String.valueOf(cartProducts.getPrice()));
-        Total += cartProducts.getPrice();
+        Total += cartProducts.getPrice()*cartProducts.getQuantity();
         holder.quantity.setText(String.valueOf(cartProducts.getQuantity()));
         Glide.with(holder.imgProduct.getContext()).load(cartProducts.getImage()).placeholder(R.drawable.ic_baseline_person).into(holder.imgProduct);
         holder.rootview.setOnClickListener(view -> {
@@ -80,7 +82,7 @@ public class CartRecieveAdapter extends RecyclerView.Adapter<CartRecieveAdapter.
         });
 
 
-        final int[] count = {0};
+        count = 0;
         holder.inc.setOnClickListener(v -> {
 
 
@@ -89,37 +91,46 @@ public class CartRecieveAdapter extends RecyclerView.Adapter<CartRecieveAdapter.
 
             productId = cartProducts.getProductId();
 
-           Long in = CartQuantityAPI(productId, cartProducts.getMerchantId());
+           Integer ans = CartQuantityAPI(productId, cartProducts.getMerchantId(),cartProducts.getQuantity()+1);
 
-           if(count[0] < in)
+           if(ans==1)
            {
-               count[0]++;
-
+               count++;
            }
            else
            {
                Toast.makeText(context, "Stock Not Available", Toast.LENGTH_SHORT).show();
            }
-            holder.dis.setText("" + count[0]);
+            holder.dis.setText("" + count);
 
         });
 
         holder.dec.setOnClickListener(v -> {
 
-            count[0]--;
-            if(count[0] > 0)
+            count--;
+            if(count > 0)
             {
-                count[0]--;
+                count--;
             }
             else
             {
-                count[0] =0;
+                count =0;
             }
 
-            holder.dis.setText("" + count[0]);
+            holder.dis.setText("" + count);
         });
 
+//        SharedPreferences sharedPreferences = context.getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
+//        email = sharedPreferences.getString("email", "Default");
 
+
+//        SharedPreferences sharedPreferences= context.getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor=sharedPreferences.edit();
+//        editor.putString("grTotal",Total+"");
+
+//        SharedPreferences sharedPreferences=getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
+//
+//        SharedPreferences.Editor editor=sharedPreferences.edit();
     }
 
 
@@ -133,30 +144,29 @@ public class CartRecieveAdapter extends RecyclerView.Adapter<CartRecieveAdapter.
         return mcartProducts.size();
     }
 
-    private Long CartQuantityAPI(String productId , String merchantId){
+    private Integer CartQuantityAPI(String productId , String merchantId , int quantity){
 
-        final Long[] x = new Long[1];
-        CartQuantityChecker cartQuantityChecker = new CartQuantityChecker(productId, merchantId);
+        CartQuantityChecker cartQuantityChecker = new CartQuantityChecker(productId, merchantId,quantity);
         Retrofit retrofit = BuilderCart.getInstance();
         CartInterface cartInterface = retrofit.create(CartInterface.class);
 
-        Call<Long> cartInterfaceCall = cartInterface.postLogGetQty(cartQuantityChecker);
-        cartInterfaceCall.enqueue(new Callback<Long>() {
+        Call<Integer> cartInterfaceCall = cartInterface.postLogGetQty(cartQuantityChecker);
+        cartInterfaceCall.enqueue(new Callback<Integer>() {
             @Override
-            public void onResponse(Call<Long> call, Response<Long> response) {
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
 
-                x[0] = response.body().longValue();
+                bol = response.body().intValue();
             }
 
             @Override
-            public void onFailure(Call<Long> call, Throwable t) {
+            public void onFailure(Call<Integer> call, Throwable t) {
                 Toast.makeText(context, "Counter Not Work", Toast.LENGTH_SHORT).show();
             }
         });
 
 
         Log.d("AAAAAASDCSDFD","DSSDSDSDSD");
-        return x[0];
+        return bol;
 
 
     }

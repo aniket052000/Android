@@ -1,9 +1,14 @@
 package com.example.e_mobile.orderhistoryRetro;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class OrderHistoryEntity {
+public class OrderHistoryEntity implements Serializable {
+    @SerializedName("userEmail")
     private String userEmail;
+    @SerializedName("orderList")
     private List<OrderItemsEntity> orderList;
 
     public OrderHistoryEntity(String userEmail, List<OrderItemsEntity> orderList) {

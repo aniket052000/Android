@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cartrecycler"
+        android:id="@+id/cartrecyclerxyz"
         android:layout_width="409dp"
         android:layout_height="620dp"
         android:layout_marginTop="1dp"
@@ -43,7 +43,7 @@
         android:text="Total"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cartrecycler" />
+        app:layout_constraintTop_toBottomOf="@+id/cartrecyclerxyz" />
 
     <TextView
         android:id="@+id/Totaldisplay"
@@ -54,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/Ctotal" />
 
     <Button
-        android:id="@+id/placeorder"
+        android:id="@+id/placeorderfragment"
         android:layout_width="210dp"
         android:layout_height="67dp"
         android:text="Place order"
@@ -63,6 +63,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/Ctotal"
-        app:layout_constraintTop_toBottomOf="@+id/cartrecycler" />
+        app:layout_constraintTop_toBottomOf="@+id/cartrecyclerxyz" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

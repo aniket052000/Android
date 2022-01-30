@@ -5,6 +5,8 @@ import com.example.e_mobile.cartRetro.CartRecieveEntity;
 import com.example.e_mobile.orderhistoryRetro.OrderHistoryEntity;
 import com.example.e_mobile.orderhistoryRetro.OrderItemsEntity;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -13,10 +15,10 @@ import retrofit2.http.Path;
 
 public interface OrderInterface {
 
-    @GET("/order/get/{mail}")
-    Call<OrderHistoryEntity> postLogRecieve(@Path("mail") String mail);
+    @GET("order/getAll/{email}")
+    Call<List<OrderHistoryEntity>> postLogRecieve(@Path("email") String email);
 
-    @GET("/order/get")
+    @GET("order/get")
     Call<OrderItemsEntity> postLogRecieveProductList(@Body OrderItemsEntity orderItemsEntity);
 
 }

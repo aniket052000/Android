@@ -49,7 +49,7 @@
         android:id="@+id/Totaldisplay1"
         android:layout_width="180dp"
         android:layout_height="41dp"
-
+        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Ctotal" />
 
@@ -58,6 +58,7 @@
         android:layout_width="210dp"
         android:layout_height="67dp"
         android:text="Place order"
+        android:gravity="center"
         android:textColor="@color/white"
         android:backgroundTint="@color/ourlogo"
         app:layout_constraintBottom_toBottomOf="parent"

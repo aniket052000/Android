@@ -3,6 +3,7 @@ package com.example.e_mobile;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -29,12 +30,14 @@ public class Dummy extends AppCompatActivity{
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            boolean userLoggedIn=true;
+            SharedPreferences sharedPreferences=getSharedPreferences("com.example.e_mobile", Context.MODE_PRIVATE);
+            String uemail = sharedPreferences.getString("email", "Default");
+
             switch (id) {
                 case R.id.cart:
-                    if(userLoggedIn)
+                    if(!uemail.equals("Default"))
                     {
-                        //setCurrentFragment(cartobj);
+//                        setCurrentFragment(cartobj);
                         Intent i = new Intent(Dummy.this, CartActivity.class);
                         startActivity(i);
                     }
@@ -47,12 +50,15 @@ public class Dummy extends AppCompatActivity{
                     break;
 
                 case R.id.person:
-                    if(userLoggedIn) {
+                    if(!uemail.equals("Default")) {
                         setCurrentFragment(profileobj);
+//                        Intent in=new Intent(Dummy.this,Profile.class);
+//                        startActivity(in);
                     }
+
                     else{
-                        Intent i = new Intent(Dummy.this, SignupOrLogin.class);
-                        startActivity(i);
+                        Intent in = new Intent(Dummy.this, SignupOrLogin.class);
+                        startActivity(in);
                     }
                     break;
 

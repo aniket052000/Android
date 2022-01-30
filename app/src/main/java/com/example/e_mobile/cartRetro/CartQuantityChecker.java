@@ -6,10 +6,20 @@ public class CartQuantityChecker implements Serializable {
 
     private String productId;
     private String merchantId;
+    private int quantity;
 
-    public CartQuantityChecker(String productId, String merchantId) {
+    public CartQuantityChecker(String productId, String merchantId, int quantity) {
         this.productId = productId;
         this.merchantId = merchantId;
+        this.quantity = quantity;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public String getProductId() {

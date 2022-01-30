@@ -14,7 +14,6 @@ public class Logout extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logout);
-
         Button btYes=findViewById(R.id.btYes);
         Button btNo=findViewById(R.id.btNo);
         btYes.setOnClickListener(view -> {
@@ -22,7 +21,6 @@ public class Logout extends AppCompatActivity {
             sharedPreferences.edit().clear().commit();
             Intent i=new Intent(Logout.this,AfterSplash.class);
             startActivity(i);
-
         });
 
         btNo.setOnClickListener(view -> {
