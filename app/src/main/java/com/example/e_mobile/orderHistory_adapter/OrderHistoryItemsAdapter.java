@@ -9,35 +9,37 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.e_mobile.R;
-import com.example.e_mobile.orderHistory_model.OrderHistoryModel;
-import com.example.e_mobile.orderhistoryRetro.OrderItemsEntity;
+
+import com.example.e_mobile.orderhistory.OrderListItem;
+import com.example.e_mobile.orderhistory.ProductsListItem;
+
 
 import java.util.List;
 
 public class OrderHistoryItemsAdapter extends RecyclerView.Adapter<OrderHistoryItemsAdapter.Viewholder> {
 
-    private final List<OrderItemsEntity> orderItemsEntities;
-    private final OrderHistoryItemsInterface orderHistoryItemsInterface;
+    private final List<OrderListItem> orderListItems;
+    private final OrderListItemInterface orderListItemInterface;
 
-    public OrderHistoryItemsAdapter(List<OrderItemsEntity> orderItemsEntities , OrderHistoryItemsInterface orderHistoryItemsInterface) {
-        this.orderItemsEntities = orderItemsEntities;
-        this.orderHistoryItemsInterface=orderHistoryItemsInterface;
+    public OrderHistoryItemsAdapter(List<OrderListItem> orderListItems, OrderListItemInterface orderListItemInterface) {
+        this.orderListItems = orderListItems;
+        this.orderListItemInterface = orderListItemInterface;
     }
 
     @Override
     public void onBindViewHolder(@NonNull OrderHistoryItemsAdapter.Viewholder holder, int position) {
 
 
-        OrderItemsEntity orderHistoryItems=orderItemsEntities.get(position);
+        OrderListItem orderListItem = orderListItems.get(position);
 
-        holder.productID.setText(orderHistoryItems.getProductsList().get(position).getProductId());
-        holder.grandTotal.setText(String.valueOf(orderHistoryItems.getProductsList().get(position).getTotal()));
+        holder.productID.setText(orderListItem.getOrderId());
+        holder.grandTotal.setText(String.valueOf(orderListItem.getGrandTotal()));
 
 //        holder.rootview.setOnClickListener(view -> {
 //            OrderHistoryDataInterface.onUserClick(orderHistoryModel);
 //        });
         holder.rootview.setOnClickListener(view -> {
-            orderHistoryItemsInterface.onUserClick(orderHistoryItems);
+            orderListItems.
         });
 
 
@@ -46,7 +48,11 @@ public class OrderHistoryItemsAdapter extends RecyclerView.Adapter<OrderHistoryI
 
     @Override
     public int getItemCount() {
-        return orderItemsEntities.size();
+        return orderListItems.size();
+    }
+
+    public interface OrderListItemInterface{
+        void onUserClick(List<OrderListItem> orderListItem);
     }
 
     @NonNull
@@ -56,9 +62,6 @@ public class OrderHistoryItemsAdapter extends RecyclerView.Adapter<OrderHistoryI
         return new OrderHistoryItemsAdapter.Viewholder(view);
     }
 
-    public interface OrderHistoryItemsInterface{
-        void onUserClick(OrderItemsEntity orderItemsEntity);
-    }
     public static class Viewholder extends RecyclerView.ViewHolder{
         private final TextView productID;
         private final TextView grandTotal;

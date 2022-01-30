@@ -2,6 +2,8 @@ package com.example.e_mobile.RetrofitInterfaces;
 
 import com.example.e_mobile.addtocartRetro.AddToCartEntity;
 import com.example.e_mobile.cartRetro.CartRecieveEntity;
+import com.example.e_mobile.orderhistory.OrderHistoryModel;
+import com.example.e_mobile.orderhistory.OrderListItem;
 import com.example.e_mobile.orderhistoryRetro.OrderHistoryEntity;
 import com.example.e_mobile.orderhistoryRetro.OrderItemsEntity;
 
@@ -16,7 +18,7 @@ import retrofit2.http.Path;
 public interface OrderInterface {
 
     @GET("order/getAll/{email}")
-    Call<List<OrderHistoryEntity>> postLogRecieve(@Path("email") String email);
+    Call<OrderHistoryModel> postLogRecieve(@Path("email") String email);
 
     @GET("order/get")
     Call<OrderItemsEntity> postLogRecieveProductList(@Body OrderItemsEntity orderItemsEntity);

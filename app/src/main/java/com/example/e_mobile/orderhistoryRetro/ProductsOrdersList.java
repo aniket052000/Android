@@ -6,7 +6,7 @@ public class ProductsOrdersList implements Serializable {
     private String productId;
     private String productName;
     private String merchantId;
-    private int quantity;
+    private Long quantity;
     private String image;
     private String usp;
     private Double price;
@@ -16,7 +16,7 @@ public class ProductsOrdersList implements Serializable {
     public ProductsOrdersList() {
     }
 
-    public ProductsOrdersList(String productId, String productName, String merchantId, int quantity, String image, String usp, Double price, Double productRating, Double total) {
+    public ProductsOrdersList(String productId, String productName, String merchantId, Long quantity, String image, String usp, Double price, Double productRating, Double total) {
         this.productId = productId;
         this.productName = productName;
         this.merchantId = merchantId;
@@ -52,11 +52,11 @@ public class ProductsOrdersList implements Serializable {
         this.merchantId = merchantId;
     }
 
-    public int getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 

@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 
 public class OrderHistoryEntity implements Serializable {
+
+
     @SerializedName("userEmail")
     private String userEmail;
     @SerializedName("orderList")
