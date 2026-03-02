@@ -1,0 +1,14 @@
+name: Update Confluence on PR Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  update-confluence:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print PR Info
+        run: echo "PR was merged!"
