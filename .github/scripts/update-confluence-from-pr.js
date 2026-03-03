@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 /**
- * On PR merge: fetches the code diff, parses it to generate a structured
- * summary of what changed, then updates the Confluence project summary page.
- *
- * No external AI API needed — diff is parsed locally.
+ * On PR merge:
+ *   1. Reads the existing Confluence project summary page
+ *   2. Fetches the PR code diff
+ *   3. Sends both to Groq AI (Llama 3.3 70B, free tier)
+ *   4. AI regenerates the entire project summary incorporating the new changes
+ *   5. Replaces the Confluence page content with the updated summary
  *
  * Required env:
  *   GITHUB_TOKEN, PR_NUMBER, REPO_OWNER, REPO_NAME
  *   CONFLUENCE_BASE_URL, CONFLUENCE_PAGE_ID, CONFLUENCE_EMAIL, CONFLUENCE_API_TOKEN
+ *   GROQ_API_KEY
  */
 
 const CONFLUENCE_PAGE_ID = process.env.CONFLUENCE_PAGE_ID;
@@ -18,6 +21,7 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const PR_NUMBER = process.env.PR_NUMBER;
 const REPO_OWNER = process.env.REPO_OWNER;
 const REPO_NAME = process.env.REPO_NAME;
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
 function requireEnv(name) {
   const v = process.env[name];
@@ -36,6 +40,7 @@ requireEnv('GITHUB_TOKEN');
 requireEnv('PR_NUMBER');
 requireEnv('REPO_OWNER');
 requireEnv('REPO_NAME');
+requireEnv('GROQ_API_KEY');
 
 const confluenceAuth = Buffer.from(`${CONFLUENCE_EMAIL}:${CONFLUENCE_API_TOKEN}`).toString('base64');
 const confluenceHeaders = {
@@ -49,15 +54,6 @@ const ghHeaders = {
   Authorization: `Bearer ${GITHUB_TOKEN}`,
   'X-GitHub-Api-Version': '2022-11-28',
 };
-
-function escapeHtml(s) {
-  if (!s || typeof s !== 'string') return '';
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
 
 // ── GitHub ──
 
@@ -84,131 +80,6 @@ async function fetchPrFiles() {
   const res = await fetch(url, { headers: ghHeaders });
   if (!res.ok) return [];
   return res.json();
-}
-
-// ── Diff parser ──
-
-const SIGNATURE_PATTERNS = [
-  /^\+\s*(?:public|private|protected|static|final|abstract|override)?\s*(?:fun|def|function|class|interface|object|enum|struct|data class|sealed class)\s+\w+/i,
-  /^\+\s*(?:public|private|protected|static|final|abstract|synchronized)?\s*(?:void|int|long|String|boolean|Boolean|List|Map|Set|Optional|[\w<>\[\]]+)\s+\w+\s*\(/,
-  /^\+\s*(?:export\s+)?(?:async\s+)?(?:function|class|const|let|var)\s+\w+/,
-  /^\+\s*(?:def|class)\s+\w+/,
-  /^\+\s*(?:func|type|struct|interface)\s+\w+/,
-];
-
-function extractSignature(line) {
-  const cleaned = line.replace(/^\+\s*/, '').trim();
-  const parenIdx = cleaned.indexOf('{');
-  const sig = parenIdx > 0 ? cleaned.slice(0, parenIdx).trim() : cleaned;
-  return sig.length > 120 ? sig.slice(0, 117) + '...' : sig;
-}
-
-function parseDiff(diff) {
-  const files = [];
-  const fileSections = diff.split(/^diff --git /m).filter(Boolean);
-
-  for (const section of fileSections) {
-    const lines = section.split('\n');
-    const headerMatch = lines[0]?.match(/a\/(.+?) b\/(.+)/);
-    if (!headerMatch) continue;
-
-    const filename = headerMatch[2];
-    const added = [];
-    const removed = [];
-    const signatures = [];
-
-    for (const line of lines) {
-      if (line.startsWith('+') && !line.startsWith('+++')) {
-        added.push(line.slice(1));
-        for (const pat of SIGNATURE_PATTERNS) {
-          if (pat.test(line)) {
-            signatures.push(extractSignature(line));
-            break;
-          }
-        }
-      } else if (line.startsWith('-') && !line.startsWith('---')) {
-        removed.push(line.slice(1));
-      }
-    }
-
-    files.push({
-      filename,
-      addedLines: added.length,
-      removedLines: removed.length,
-      signatures: [...new Set(signatures)],
-      sampleAdded: added.filter((l) => l.trim().length > 3).slice(0, 5),
-      sampleRemoved: removed.filter((l) => l.trim().length > 3).slice(0, 3),
-    });
-  }
-
-  return files;
-}
-
-function categorizeFile(filename) {
-  const lower = filename.toLowerCase();
-  if (lower.includes('test')) return 'Tests';
-  if (lower.includes('build.gradle') || lower.includes('pom.xml') || lower.includes('package.json') || lower.includes('.yml') || lower.includes('.yaml')) return 'Build / Config';
-  if (lower.includes('readme') || lower.includes('.md')) return 'Documentation';
-  if (lower.endsWith('.xml') && (lower.includes('layout') || lower.includes('drawable') || lower.includes('values'))) return 'UI / Resources';
-  return 'Source Code';
-}
-
-function generateSummary(pr, diffFiles, ghFiles) {
-  const totalAdded = ghFiles.reduce((a, f) => a + (f.additions || 0), 0);
-  const totalRemoved = ghFiles.reduce((a, f) => a + (f.deletions || 0), 0);
-
-  const categories = {};
-  for (const f of diffFiles) {
-    const cat = categorizeFile(f.filename);
-    if (!categories[cat]) categories[cat] = [];
-    categories[cat].push(f);
-  }
-
-  let html = '';
-
-  // High-level summary from PR body
-  const desc = (pr.body || '').trim();
-  if (desc) {
-    const shortDesc = desc.slice(0, 600);
-    html += `<p>${escapeHtml(shortDesc).replace(/\n/g, '<br/>')}</p>`;
-  }
-
-  // Stats
-  html += `<p><strong>${ghFiles.length} files changed</strong> — `;
-  html += `<span style="color:green">+${totalAdded} additions</span>, `;
-  html += `<span style="color:red">-${totalRemoved} deletions</span></p>`;
-
-  // Key changes by category
-  html += '<h3>Key Changes</h3>';
-
-  for (const [cat, files] of Object.entries(categories)) {
-    html += `<p><strong>${escapeHtml(cat)}</strong></p><ul>`;
-
-    for (const f of files) {
-      const shortName = f.filename.split('/').slice(-2).join('/');
-      let bullet = `<strong>${escapeHtml(shortName)}</strong>`;
-      bullet += ` (+${f.addedLines} -${f.removedLines})`;
-
-      if (f.signatures.length > 0) {
-        const sigs = f.signatures.slice(0, 4).map((s) => `<code>${escapeHtml(s)}</code>`).join(', ');
-        bullet += `<br/>New/modified: ${sigs}`;
-      }
-
-      const ghFile = ghFiles.find((g) => g.filename === f.filename);
-      if (ghFile) {
-        const statusLabel = { added: 'New file', removed: 'Deleted', renamed: 'Renamed', modified: 'Modified' };
-        const label = statusLabel[ghFile.status] || ghFile.status;
-        if (ghFile.status !== 'modified') {
-          bullet += ` — <em>${label}</em>`;
-        }
-      }
-
-      html += `<li>${bullet}</li>`;
-    }
-    html += '</ul>';
-  }
-
-  return html;
 }
 
 // ── Confluence ──
@@ -253,53 +124,139 @@ async function updateConfluencePage(newBody, version, title, status, versionMess
   return res.json();
 }
 
-// ── Build HTML fragment ──
+// ── Groq AI ──
 
-function buildFragment(pr, summary, ghFiles) {
-  const titleEsc = escapeHtml(pr.title);
-  const link = `<a href="${escapeHtml(pr.htmlUrl)}">#${PR_NUMBER} ${titleEsc}</a>`;
-  const dateLine = pr.mergedAt ? ` <em>(${pr.mergedAt})</em>` : '';
+const MAX_DIFF_CHARS = 30000;
+const MAX_SUMMARY_CHARS = 8000;
 
-  let html = `<h3>Merged PR ${link}${dateLine}</h3>`;
-  html += summary;
-  html += '<hr/>';
-  return html;
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function regenerateSummary(existingSummary, diff, pr, files) {
+  const truncatedDiff =
+    diff.length > MAX_DIFF_CHARS
+      ? diff.slice(0, MAX_DIFF_CHARS) + '\n\n... [diff truncated] ...'
+      : diff;
+
+  const truncatedSummary =
+    existingSummary.length > MAX_SUMMARY_CHARS
+      ? existingSummary.slice(0, MAX_SUMMARY_CHARS) + '\n... [summary truncated] ...'
+      : existingSummary;
+
+  const fileList = files
+    .map((f) => `${f.status} ${f.filename} (+${f.additions} -${f.deletions})`)
+    .join('\n');
+
+  const prompt = `You are updating a project summary document on Confluence. You have two inputs:
+
+1. THE EXISTING PROJECT SUMMARY (current content of the Confluence page):
+---
+${truncatedSummary}
+---
+
+2. A NEW PULL REQUEST THAT WAS JUST MERGED:
+- PR Title: ${pr.title}
+- PR Description: ${pr.body || '(none)'}
+- Merged on: ${pr.mergedAt}
+- PR Link: ${pr.htmlUrl}
+- Files changed:
+${fileList}
+
+- Code diff:
+\`\`\`
+${truncatedDiff}
+\`\`\`
+
+YOUR TASK:
+Rewrite the ENTIRE project summary, incorporating the changes from this PR. The updated summary should:
+
+1. Keep all existing information that is still accurate.
+2. UPDATE any sections that are affected by the PR changes (e.g., if the PR changes how a feature works, update that feature's description).
+3. ADD new information about what this PR introduced or changed.
+4. Include a "Recent Changes" section at the bottom with a brief log entry for this PR (date, PR link, what changed).
+5. Be written in clear, non-technical language where possible — this is a project summary for the team, not a code review.
+6. Keep it concise but comprehensive.
+
+OUTPUT FORMAT:
+- Write the output as Confluence storage format HTML.
+- Use these tags: <h1>, <h2>, <h3>, <p>, <ul>, <li>, <strong>, <em>, <a>, <code>, <table>, <tr>, <th>, <td>.
+- Do NOT wrap the output in \`\`\` code blocks.
+- Do NOT include any preamble like "Here is the updated summary". Just output the HTML directly.
+- The output replaces the ENTIRE page body, so include everything.`;
+
+  const models = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
+
+  for (const model of models) {
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      console.log(`Calling Groq (${model}, attempt ${attempt})...`);
+
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${GROQ_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 4000,
+          temperature: 0.3,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        let content = data.choices?.[0]?.message?.content || '';
+        content = content.replace(/```html\s*/gi, '').replace(/```\s*/g, '').trim();
+        if (content.length > 50) return content;
+        console.log('Response too short, retrying...');
+      } else {
+        const errText = await res.text();
+        console.error(`Groq API error (${model}, attempt ${attempt}): ${res.status} ${errText}`);
+        if (res.status === 429) {
+          const waitSec = 10 * attempt;
+          console.log(`Rate limited. Waiting ${waitSec}s...`);
+          await sleep(waitSec * 1000);
+          continue;
+        }
+      }
+      break;
+    }
+    console.log(`Model ${model} failed, trying next...`);
+  }
+
+  return null;
 }
 
 // ── Main ──
 
 async function main() {
-  console.log('Fetching PR details...');
-  const [pr, diff, ghFiles] = await Promise.all([
+  console.log('Step 1: Fetching PR details, diff, and files...');
+  const [pr, diff, files] = await Promise.all([
     fetchPrDetails(),
     fetchPrDiff(),
     fetchPrFiles(),
   ]);
-  console.log(`PR: ${pr.title} | ${ghFiles.length} files | diff: ${diff.length} chars`);
+  console.log(`PR: "${pr.title}" | ${files.length} files | diff: ${diff.length} chars`);
 
-  console.log('Parsing diff and generating summary...');
-  const diffFiles = parseDiff(diff);
-  const summary = generateSummary(pr, diffFiles, ghFiles);
-  console.log(`Parsed ${diffFiles.length} files from diff.`);
-
-  const fragment = buildFragment(pr, summary, ghFiles);
-
-  console.log('Fetching current Confluence page...');
+  console.log('Step 2: Fetching current Confluence page...');
   const { currentStorage, version, title, status } = await getConfluencePage();
+  console.log(`Current page: "${title}" | version: ${version} | content: ${currentStorage.length} chars`);
 
-  const sectionMarker = '<h2>Recently merged</h2>';
-  let newStorage;
-  if (currentStorage.includes(sectionMarker)) {
-    const idx = currentStorage.indexOf(sectionMarker);
-    const afterHeading = currentStorage.indexOf('</h2>', idx) + 5;
-    newStorage = currentStorage.slice(0, afterHeading) + '\n' + fragment + currentStorage.slice(afterHeading);
-  } else {
-    newStorage = currentStorage + '\n\n' + sectionMarker + '\n' + fragment;
+  console.log('Step 3: Sending to AI to regenerate project summary...');
+  const newSummary = await regenerateSummary(currentStorage, diff, pr, files);
+
+  if (!newSummary) {
+    console.error('AI failed to generate summary. Confluence page not updated.');
+    process.exit(1);
   }
 
-  console.log('Updating Confluence page...');
-  await updateConfluencePage(newStorage, version, title, status, `GitHub PR #${PR_NUMBER}: ${pr.title}`);
-  console.log('Done. Confluence project summary updated.');
+  console.log(`AI generated new summary: ${newSummary.length} chars`);
+
+  console.log('Step 4: Updating Confluence page with new summary...');
+  await updateConfluencePage(newSummary, version, title, status, `Updated via PR #${PR_NUMBER}: ${pr.title}`);
+  console.log('Done! Confluence project summary regenerated with PR changes.');
 }
 
 main().catch((err) => {
