@@ -1,37 +1,89 @@
 package com.example.e_mobile.recommended_model;
 
-public class Recommended_Model {
+import java.io.Serializable;
+
+public class Recommended_Model implements Serializable, Comparable<Recommended_Model> {
+
+    private String productId;
     private String name;
-    private int price;
+    private double originalPrice;
+    private double discountPercentage;
     private String imageUrl;
+    private double rating;
+    private int totalReviews;
+    private boolean inStock;
+    private double recommendationScore;
 
-    public Recommended_Model(String name, int price, String imageUrl) {
+    public Recommended_Model(String productId,
+                             String name,
+                             double originalPrice,
+                             double discountPercentage,
+                             String imageUrl,
+                             double rating,
+                             int totalReviews,
+                             boolean inStock) {
+
+        this.productId = productId;
         this.name = name;
-        this.price = price;
+        this.originalPrice = originalPrice;
+        this.discountPercentage = discountPercentage;
         this.imageUrl = imageUrl;
+        this.rating = rating;
+        this.totalReviews = totalReviews;
+        this.inStock = inStock;
+
+        calculateRecommendationScore();
     }
 
-    public String getName() {
-        return name;
+    // 🔥 BUSINESS LOGIC METHODS
+
+    public double getFinalPrice() {
+        return originalPrice - (originalPrice * discountPercentage / 100);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public boolean isHighlyRated() {
+        return rating >= 4.5;
     }
 
-    public int getPrice() {
-        return price;
+    public boolean isTrending() {
+        return totalReviews > 200;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public boolean isAvailable() {
+        return inStock;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    private void calculateRecommendationScore() {
+        this.recommendationScore =
+                (rating * 2) +
+                (discountPercentage * 0.5) +
+                (totalReviews * 0.01);
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public double getRecommendationScore() {
+        return recommendationScore;
     }
+
+    @Override
+    public int compareTo(Recommended_Model other) {
+        return Double.compare(other.recommendationScore, this.recommendationScore);
+    }
+
+    // 🔹 Getters
+
+    public String getProductId() { return productId; }
+
+    public String getName() { return name; }
+
+    public double getOriginalPrice() { return originalPrice; }
+
+    public double getDiscountPercentage() { return discountPercentage; }
+
+    public String getImageUrl() { return imageUrl; }
+
+    public double getRating() { return rating; }
+
+    public int getTotalReviews() { return totalReviews; }
+
+    public boolean isInStock() { return inStock; }
 }
