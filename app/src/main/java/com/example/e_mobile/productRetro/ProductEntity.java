@@ -20,7 +20,6 @@ public class ProductEntity implements Serializable {
     // 🔥 New Fields
     private Double rating;
     private Integer totalReviews;
-    private Boolean isFeatured;
 
     public ProductEntity(String productId,
                          String productName,
@@ -35,8 +34,7 @@ public class ProductEntity implements Serializable {
                          String description,
                          String image,
                          Double rating,
-                         Integer totalReviews,
-                         Boolean isFeatured) {
+                         Integer totalReviews) {
 
         this.productId = productId;
         this.productName = productName;
@@ -52,7 +50,6 @@ public class ProductEntity implements Serializable {
         this.attribute5 = attribute5;
         this.rating = rating;
         this.totalReviews = totalReviews;
-        this.isFeatured = isFeatured;
     }
 
     // 🔥 BUSINESS LOGIC METHODS
@@ -63,10 +60,6 @@ public class ProductEntity implements Serializable {
 
     public boolean isHighlyRated() {
         return rating != null && rating >= 4.5;
-    }
-
-    public boolean isFeaturedProduct() {
-        return isFeatured != null && isFeatured;
     }
 
     public MerchantEntity getLowestPriceMerchant() {
