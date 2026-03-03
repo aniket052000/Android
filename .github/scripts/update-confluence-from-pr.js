@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
- * On PR merge: fetches the code diff, uses OpenAI to generate an intelligent
- * summary of what changed, then updates the Confluence project summary page.
+ * On PR merge: fetches the code diff, uses Google Gemini (free tier) to generate
+ * an intelligent summary of what changed, then updates the Confluence project
+ * summary page.
  *
  * Required env:
  *   GITHUB_TOKEN, PR_NUMBER, REPO_OWNER, REPO_NAME
  *   CONFLUENCE_BASE_URL, CONFLUENCE_PAGE_ID, CONFLUENCE_EMAIL, CONFLUENCE_API_TOKEN
- *   OPENAI_API_KEY
+ *   GEMINI_API_KEY
  */
 
 const CONFLUENCE_PAGE_ID = process.env.CONFLUENCE_PAGE_ID;
@@ -17,7 +18,7 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const PR_NUMBER = process.env.PR_NUMBER;
 const REPO_OWNER = process.env.REPO_OWNER;
 const REPO_NAME = process.env.REPO_NAME;
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 function requireEnv(name) {
   const v = process.env[name];
@@ -36,7 +37,7 @@ requireEnv('GITHUB_TOKEN');
 requireEnv('PR_NUMBER');
 requireEnv('REPO_OWNER');
 requireEnv('REPO_NAME');
-requireEnv('OPENAI_API_KEY');
+requireEnv('GEMINI_API_KEY');
 
 const confluenceAuth = Buffer.from(`${CONFLUENCE_EMAIL}:${CONFLUENCE_API_TOKEN}`).toString('base64');
 const confluenceHeaders = {
@@ -60,27 +61,21 @@ function escapeHtml(s) {
     .replace(/"/g, '&quot;');
 }
 
+// ── GitHub ──
+
 async function fetchPrDetails() {
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/pulls/${PR_NUMBER}`;
   const res = await fetch(url, { headers: ghHeaders });
   if (!res.ok) throw new Error(`GitHub PR API error: ${res.status} ${await res.text()}`);
   const pr = await res.json();
   const mergedAt = pr.merged_at ? new Date(pr.merged_at).toISOString().slice(0, 10) : '';
-  return {
-    title: pr.title,
-    body: pr.body || '',
-    htmlUrl: pr.html_url,
-    mergedAt,
-  };
+  return { title: pr.title, body: pr.body || '', htmlUrl: pr.html_url, mergedAt };
 }
 
 async function fetchPrDiff() {
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/pulls/${PR_NUMBER}`;
   const res = await fetch(url, {
-    headers: {
-      ...ghHeaders,
-      Accept: 'application/vnd.github.v3.diff',
-    },
+    headers: { ...ghHeaders, Accept: 'application/vnd.github.v3.diff' },
   });
   if (!res.ok) throw new Error(`GitHub diff API error: ${res.status} ${await res.text()}`);
   return res.text();
@@ -99,14 +94,19 @@ async function fetchPrFiles() {
   }));
 }
 
+// ── Google Gemini ──
+
 const MAX_DIFF_CHARS = 60000;
 
-async function summarizeWithAI(diff, prTitle, prBody, files) {
-  const truncatedDiff = diff.length > MAX_DIFF_CHARS
-    ? diff.slice(0, MAX_DIFF_CHARS) + '\n\n... [diff truncated] ...'
-    : diff;
+async function summarizeWithGemini(diff, prTitle, prBody, files) {
+  const truncatedDiff =
+    diff.length > MAX_DIFF_CHARS
+      ? diff.slice(0, MAX_DIFF_CHARS) + '\n\n... [diff truncated] ...'
+      : diff;
 
-  const fileList = files.map((f) => `${f.status} ${f.filename} (+${f.additions} -${f.deletions})`).join('\n');
+  const fileList = files
+    .map((f) => `${f.status} ${f.filename} (+${f.additions} -${f.deletions})`)
+    .join('\n');
 
   const prompt = `You are a senior software engineer. A pull request was merged. Based on the code diff below, write a concise project summary update suitable for a Confluence project documentation page.
 
@@ -131,31 +131,33 @@ Use these HTML tags only: <p>, <strong>, <em>, <ul>, <li>, <h3>.
 Do NOT include a top-level heading (the caller adds that). Do NOT wrap in \`\`\` code blocks.
 Be concise — this is a project summary, not a code review.`;
 
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+  const res = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'gpt-4o',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 1500,
-      temperature: 0.3,
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.3,
+        maxOutputTokens: 1500,
+      },
     }),
   });
 
   if (!res.ok) {
     const errText = await res.text();
-    console.error(`OpenAI API error: ${res.status} ${errText}`);
+    console.error(`Gemini API error: ${res.status} ${errText}`);
     return null;
   }
 
   const data = await res.json();
-  let content = data.choices?.[0]?.message?.content || '';
-  content = content.replace(/\s*/gi, '').replace(/```\s*/g, '').trim();
+  let content = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  content = content.replace(/```html\s*/gi, '').replace(/```\s*/g, '').trim();
   return content;
 }
+
+// ── Confluence ──
 
 async function getConfluencePage() {
   const url = `${CONFLUENCE_BASE_URL}/wiki/api/v2/pages/${CONFLUENCE_PAGE_ID}?body-format=storage`;
@@ -197,6 +199,8 @@ async function updateConfluencePage(newBody, version, title, status, versionMess
   return res.json();
 }
 
+// ── Build HTML fragment ──
+
 function buildFragment(pr, aiSummary, files) {
   const titleEsc = escapeHtml(pr.title);
   const link = `<a href="${escapeHtml(pr.htmlUrl)}">#${PR_NUMBER} ${titleEsc}</a>`;
@@ -220,6 +224,8 @@ function buildFragment(pr, aiSummary, files) {
   return html;
 }
 
+// ── Main ──
+
 async function main() {
   console.log('Fetching PR details...');
   const [pr, diff, files] = await Promise.all([
@@ -229,8 +235,8 @@ async function main() {
   ]);
   console.log(`PR: ${pr.title} | ${files.length} files | diff: ${diff.length} chars`);
 
-  console.log('Sending diff to OpenAI for summarization...');
-  const aiSummary = await summarizeWithAI(diff, pr.title, pr.body, files);
+  console.log('Sending diff to Gemini for summarization...');
+  const aiSummary = await summarizeWithGemini(diff, pr.title, pr.body, files);
   if (aiSummary) {
     console.log('AI summary generated successfully.');
   } else {
