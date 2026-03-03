@@ -1,13 +1,13 @@
-# When a PR is merged, parses the code diff and updates the Confluence project
-# summary page with a structured summary of the changes.
-#
-# No AI API key needed — diff is parsed locally.
+# When a PR is merged, reads the existing Confluence project summary + the PR
+# code diff, then uses AI (Groq/Llama, free) to regenerate the entire project
+# summary incorporating the new changes.
 #
 # Required repo secrets:
 #   CONFLUENCE_BASE_URL   - e.g. https://aniketforwork.atlassian.net
-#   CONFLUENCE_PAGE_ID    - Project summary page ID (from page URL)
+#   CONFLUENCE_PAGE_ID    - Project summary page ID
 #   CONFLUENCE_EMAIL      - Atlassian account email
-#   CONFLUENCE_API_TOKEN  - API token from https://id.atlassian.com/manage-profile/security/api-tokens
+#   CONFLUENCE_API_TOKEN  - Atlassian API token
+#   GROQ_API_KEY          - Free API key from https://console.groq.com
 
 name: Update Confluence on PR merge
 
@@ -46,4 +46,5 @@ jobs:
           CONFLUENCE_PAGE_ID: ${{ secrets.CONFLUENCE_PAGE_ID }}
           CONFLUENCE_EMAIL: ${{ secrets.CONFLUENCE_EMAIL }}
           CONFLUENCE_API_TOKEN: ${{ secrets.CONFLUENCE_API_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: node .github/scripts/update-confluence-from-pr.js
