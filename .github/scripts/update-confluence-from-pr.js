@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * On PR merge: fetches the code diff, uses Google Gemini (free tier) to generate
- * an intelligent summary of what changed, then updates the Confluence project
- * summary page.
+ * On PR merge: fetches the code diff, parses it to generate a structured
+ * summary of what changed, then updates the Confluence project summary page.
+ *
+ * No external AI API needed — diff is parsed locally.
  *
  * Required env:
  *   GITHUB_TOKEN, PR_NUMBER, REPO_OWNER, REPO_NAME
  *   CONFLUENCE_BASE_URL, CONFLUENCE_PAGE_ID, CONFLUENCE_EMAIL, CONFLUENCE_API_TOKEN
- *   GEMINI_API_KEY
  */
 
 const CONFLUENCE_PAGE_ID = process.env.CONFLUENCE_PAGE_ID;
@@ -18,7 +18,6 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const PR_NUMBER = process.env.PR_NUMBER;
 const REPO_OWNER = process.env.REPO_OWNER;
 const REPO_NAME = process.env.REPO_NAME;
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 function requireEnv(name) {
   const v = process.env[name];
@@ -37,7 +36,6 @@ requireEnv('GITHUB_TOKEN');
 requireEnv('PR_NUMBER');
 requireEnv('REPO_OWNER');
 requireEnv('REPO_NAME');
-requireEnv('GEMINI_API_KEY');
 
 const confluenceAuth = Buffer.from(`${CONFLUENCE_EMAIL}:${CONFLUENCE_API_TOKEN}`).toString('base64');
 const confluenceHeaders = {
@@ -85,76 +83,132 @@ async function fetchPrFiles() {
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/pulls/${PR_NUMBER}/files?per_page=100`;
   const res = await fetch(url, { headers: ghHeaders });
   if (!res.ok) return [];
-  const files = await res.json();
-  return files.map((f) => ({
-    filename: f.filename,
-    status: f.status,
-    additions: f.additions,
-    deletions: f.deletions,
-  }));
+  return res.json();
 }
 
-// ── Google Gemini ──
+// ── Diff parser ──
 
-const MAX_DIFF_CHARS = 60000;
+const SIGNATURE_PATTERNS = [
+  /^\+\s*(?:public|private|protected|static|final|abstract|override)?\s*(?:fun|def|function|class|interface|object|enum|struct|data class|sealed class)\s+\w+/i,
+  /^\+\s*(?:public|private|protected|static|final|abstract|synchronized)?\s*(?:void|int|long|String|boolean|Boolean|List|Map|Set|Optional|[\w<>\[\]]+)\s+\w+\s*\(/,
+  /^\+\s*(?:export\s+)?(?:async\s+)?(?:function|class|const|let|var)\s+\w+/,
+  /^\+\s*(?:def|class)\s+\w+/,
+  /^\+\s*(?:func|type|struct|interface)\s+\w+/,
+];
 
-async function summarizeWithGemini(diff, prTitle, prBody, files) {
-  const truncatedDiff =
-    diff.length > MAX_DIFF_CHARS
-      ? diff.slice(0, MAX_DIFF_CHARS) + '\n\n... [diff truncated] ...'
-      : diff;
+function extractSignature(line) {
+  const cleaned = line.replace(/^\+\s*/, '').trim();
+  const parenIdx = cleaned.indexOf('{');
+  const sig = parenIdx > 0 ? cleaned.slice(0, parenIdx).trim() : cleaned;
+  return sig.length > 120 ? sig.slice(0, 117) + '...' : sig;
+}
 
-  const fileList = files
-    .map((f) => `${f.status} ${f.filename} (+${f.additions} -${f.deletions})`)
-    .join('\n');
+function parseDiff(diff) {
+  const files = [];
+  const fileSections = diff.split(/^diff --git /m).filter(Boolean);
 
-  const prompt = `You are a senior software engineer. A pull request was merged. Based on the code diff below, write a concise project summary update suitable for a Confluence project documentation page.
+  for (const section of fileSections) {
+    const lines = section.split('\n');
+    const headerMatch = lines[0]?.match(/a\/(.+?) b\/(.+)/);
+    if (!headerMatch) continue;
 
-**PR Title:** ${prTitle}
-**PR Description:** ${prBody || '(none)'}
+    const filename = headerMatch[2];
+    const added = [];
+    const removed = [];
+    const signatures = [];
 
-**Files changed:**
-${fileList}
+    for (const line of lines) {
+      if (line.startsWith('+') && !line.startsWith('+++')) {
+        added.push(line.slice(1));
+        for (const pat of SIGNATURE_PATTERNS) {
+          if (pat.test(line)) {
+            signatures.push(extractSignature(line));
+            break;
+          }
+        }
+      } else if (line.startsWith('-') && !line.startsWith('---')) {
+        removed.push(line.slice(1));
+      }
+    }
 
-**Code diff:**
-\`\`\`
-${truncatedDiff}
-\`\`\`
-
-Write the summary as HTML that will be inserted into a Confluence page. Include:
-1. A one-paragraph high-level summary of what this PR does and why (in plain language, not code-speak).
-2. A "Key Changes" section as a bullet list of the most important changes (max 8 bullets), each explaining what was changed and its impact.
-3. If there are architecture/design changes, mention them.
-4. Skip trivial changes like import reordering or formatting.
-
-Use these HTML tags only: <p>, <strong>, <em>, <ul>, <li>, <h3>.
-Do NOT include a top-level heading (the caller adds that). Do NOT wrap in \`\`\` code blocks.
-Be concise — this is a project summary, not a code review.`;
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.3,
-        maxOutputTokens: 1500,
-      },
-    }),
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    console.error(`Gemini API error: ${res.status} ${errText}`);
-    return null;
+    files.push({
+      filename,
+      addedLines: added.length,
+      removedLines: removed.length,
+      signatures: [...new Set(signatures)],
+      sampleAdded: added.filter((l) => l.trim().length > 3).slice(0, 5),
+      sampleRemoved: removed.filter((l) => l.trim().length > 3).slice(0, 3),
+    });
   }
 
-  const data = await res.json();
-  let content = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  content = content.replace(/```html\s*/gi, '').replace(/```\s*/g, '').trim();
-  return content;
+  return files;
+}
+
+function categorizeFile(filename) {
+  const lower = filename.toLowerCase();
+  if (lower.includes('test')) return 'Tests';
+  if (lower.includes('build.gradle') || lower.includes('pom.xml') || lower.includes('package.json') || lower.includes('.yml') || lower.includes('.yaml')) return 'Build / Config';
+  if (lower.includes('readme') || lower.includes('.md')) return 'Documentation';
+  if (lower.endsWith('.xml') && (lower.includes('layout') || lower.includes('drawable') || lower.includes('values'))) return 'UI / Resources';
+  return 'Source Code';
+}
+
+function generateSummary(pr, diffFiles, ghFiles) {
+  const totalAdded = ghFiles.reduce((a, f) => a + (f.additions || 0), 0);
+  const totalRemoved = ghFiles.reduce((a, f) => a + (f.deletions || 0), 0);
+
+  const categories = {};
+  for (const f of diffFiles) {
+    const cat = categorizeFile(f.filename);
+    if (!categories[cat]) categories[cat] = [];
+    categories[cat].push(f);
+  }
+
+  let html = '';
+
+  // High-level summary from PR body
+  const desc = (pr.body || '').trim();
+  if (desc) {
+    const shortDesc = desc.slice(0, 600);
+    html += `<p>${escapeHtml(shortDesc).replace(/\n/g, '<br/>')}</p>`;
+  }
+
+  // Stats
+  html += `<p><strong>${ghFiles.length} files changed</strong> — `;
+  html += `<span style="color:green">+${totalAdded} additions</span>, `;
+  html += `<span style="color:red">-${totalRemoved} deletions</span></p>`;
+
+  // Key changes by category
+  html += '<h3>Key Changes</h3>';
+
+  for (const [cat, files] of Object.entries(categories)) {
+    html += `<p><strong>${escapeHtml(cat)}</strong></p><ul>`;
+
+    for (const f of files) {
+      const shortName = f.filename.split('/').slice(-2).join('/');
+      let bullet = `<strong>${escapeHtml(shortName)}</strong>`;
+      bullet += ` (+${f.addedLines} -${f.removedLines})`;
+
+      if (f.signatures.length > 0) {
+        const sigs = f.signatures.slice(0, 4).map((s) => `<code>${escapeHtml(s)}</code>`).join(', ');
+        bullet += `<br/>New/modified: ${sigs}`;
+      }
+
+      const ghFile = ghFiles.find((g) => g.filename === f.filename);
+      if (ghFile) {
+        const statusLabel = { added: 'New file', removed: 'Deleted', renamed: 'Renamed', modified: 'Modified' };
+        const label = statusLabel[ghFile.status] || ghFile.status;
+        if (ghFile.status !== 'modified') {
+          bullet += ` — <em>${label}</em>`;
+        }
+      }
+
+      html += `<li>${bullet}</li>`;
+    }
+    html += '</ul>';
+  }
+
+  return html;
 }
 
 // ── Confluence ──
@@ -201,25 +255,13 @@ async function updateConfluencePage(newBody, version, title, status, versionMess
 
 // ── Build HTML fragment ──
 
-function buildFragment(pr, aiSummary, files) {
+function buildFragment(pr, summary, ghFiles) {
   const titleEsc = escapeHtml(pr.title);
   const link = `<a href="${escapeHtml(pr.htmlUrl)}">#${PR_NUMBER} ${titleEsc}</a>`;
   const dateLine = pr.mergedAt ? ` <em>(${pr.mergedAt})</em>` : '';
 
   let html = `<h3>Merged PR ${link}${dateLine}</h3>`;
-
-  if (aiSummary) {
-    html += aiSummary;
-  } else {
-    const desc = (pr.body || '').trim().slice(0, 500);
-    if (desc) html += `<p>${escapeHtml(desc).replace(/\n/g, ' ')}</p>`;
-  }
-
-  if (files && files.length > 0) {
-    const total = files.reduce((a, f) => a + f.additions + f.deletions, 0);
-    html += `<p><em>${files.length} files changed (${total} lines)</em></p>`;
-  }
-
+  html += summary;
   html += '<hr/>';
   return html;
 }
@@ -228,22 +270,19 @@ function buildFragment(pr, aiSummary, files) {
 
 async function main() {
   console.log('Fetching PR details...');
-  const [pr, diff, files] = await Promise.all([
+  const [pr, diff, ghFiles] = await Promise.all([
     fetchPrDetails(),
     fetchPrDiff(),
     fetchPrFiles(),
   ]);
-  console.log(`PR: ${pr.title} | ${files.length} files | diff: ${diff.length} chars`);
+  console.log(`PR: ${pr.title} | ${ghFiles.length} files | diff: ${diff.length} chars`);
 
-  console.log('Sending diff to Gemini for summarization...');
-  const aiSummary = await summarizeWithGemini(diff, pr.title, pr.body, files);
-  if (aiSummary) {
-    console.log('AI summary generated successfully.');
-  } else {
-    console.log('AI summary failed, falling back to PR description.');
-  }
+  console.log('Parsing diff and generating summary...');
+  const diffFiles = parseDiff(diff);
+  const summary = generateSummary(pr, diffFiles, ghFiles);
+  console.log(`Parsed ${diffFiles.length} files from diff.`);
 
-  const fragment = buildFragment(pr, aiSummary, files);
+  const fragment = buildFragment(pr, summary, ghFiles);
 
   console.log('Fetching current Confluence page...');
   const { currentStorage, version, title, status } = await getConfluencePage();
@@ -260,7 +299,7 @@ async function main() {
 
   console.log('Updating Confluence page...');
   await updateConfluencePage(newStorage, version, title, status, `GitHub PR #${PR_NUMBER}: ${pr.title}`);
-  console.log('Done. Confluence project summary updated with AI-generated summary.');
+  console.log('Done. Confluence project summary updated.');
 }
 
 main().catch((err) => {
